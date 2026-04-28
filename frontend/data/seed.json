@@ -1,0 +1,143 @@
+{
+  "properties": [
+    {
+      "id": "PROP-001",
+      "name": "Edificio Colón",
+      "address": "Calle Colón 24, 3ª planta",
+      "city": "Madrid",
+      "total_units": 5,
+      "status": "Active",
+      "occupancy_rate": 80
+    },
+    {
+      "id": "PROP-002",
+      "name": "Apartamentos Sol",
+      "address": "Carrer de Pelai 12, 2ª planta",
+      "city": "Barcelona",
+      "total_units": 3,
+      "status": "Active",
+      "occupancy_rate": 100
+    }
+  ],
+  "rooms": [
+    { "id": "ROOM-101", "property_id": "PROP-001", "number": "101", "type": "Individual", "price": 750, "status": "Occupied", "tenant_id": "TENANT-001" },
+    { "id": "ROOM-102", "property_id": "PROP-001", "number": "102", "type": "Doble", "price": 950, "status": "Occupied", "tenant_id": "TENANT-002" },
+    { "id": "ROOM-103", "property_id": "PROP-001", "number": "103", "type": "Suite", "price": 1200, "status": "Occupied", "tenant_id": "TENANT-003" },
+    { "id": "ROOM-104", "property_id": "PROP-001", "number": "104", "type": "Individual", "price": 750, "status": "Occupied", "tenant_id": "TENANT-004" },
+    { "id": "ROOM-105", "property_id": "PROP-001", "number": "105", "type": "Doble", "price": 950, "status": "Available", "tenant_id": null },
+    { "id": "ROOM-201", "property_id": "PROP-002", "number": "201", "type": "Individual", "price": 850, "status": "Occupied", "tenant_id": "TENANT-005" },
+    { "id": "ROOM-202", "property_id": "PROP-002", "number": "202", "type": "Doble", "price": 1050, "status": "Maintenance", "tenant_id": null },
+    { "id": "ROOM-203", "property_id": "PROP-002", "number": "203", "type": "Suite", "price": 1350, "status": "Occupied", "tenant_id": "TENANT-006" }
+  ],
+  "tenants": [
+    { "id": "TENANT-001", "full_name": "Carmen Ruiz Martínez", "email": "carmen.ruiz@gmail.com", "phone": "+34 612 345 678", "dni": "45678901A", "room_id": "ROOM-101", "status": "Active", "move_in_date": "2026-01-15" },
+    { "id": "TENANT-002", "full_name": "Alejandro Vega Soto", "email": "a.vega@outlook.com", "phone": "+34 623 456 789", "dni": "56789012B", "room_id": "ROOM-102", "status": "Active", "move_in_date": "2026-02-01" },
+    { "id": "TENANT-003", "full_name": "Sofía Martínez López", "email": "sofia.m@gmail.com", "phone": "+34 634 567 890", "dni": "67890123C", "room_id": "ROOM-103", "status": "Active", "move_in_date": "2025-12-01" },
+    { "id": "TENANT-004", "full_name": "Miguel Torres Pérez", "email": "m.torres@hotmail.com", "phone": "+34 645 678 901", "dni": "78901234D", "room_id": "ROOM-104", "status": "Active", "move_in_date": "2026-03-01" },
+    { "id": "TENANT-005", "full_name": "Ana García Fernández", "email": "ana.garcia@gmail.com", "phone": "+34 656 789 012", "dni": "89012345E", "room_id": "ROOM-201", "status": "Active", "move_in_date": "2026-01-20" },
+    { "id": "TENANT-006", "full_name": "Roberto Molina Díaz", "email": "r.molina@gmail.com", "phone": "+34 667 890 123", "dni": "90123456F", "room_id": "ROOM-203", "status": "Checkout", "move_in_date": "2025-10-01" }
+  ],
+  "leads": [
+    { "id": "LEAD-001", "full_name": "Juan Pérez González", "email": "juan.perez@gmail.com", "phone": "+34 611 111 111", "employment": "Empleado", "monthly_income": 2800, "room_price": 750, "income_ratio": 3.7, "references": 2, "has_guarantor": true, "score": 85, "status": "Auto-Aprobado", "created_at": "2026-04-23T10:30:00Z" },
+    { "id": "LEAD-002", "full_name": "Laura Sánchez Ruiz", "email": "l.sanchez@gmail.com", "phone": "+34 622 222 222", "employment": "Autónoma", "monthly_income": 2100, "room_price": 950, "income_ratio": 2.2, "references": 1, "has_guarantor": false, "score": 52, "status": "Revisión Manual", "created_at": "2026-04-22T14:15:00Z" },
+    { "id": "LEAD-003", "full_name": "Carlos Bermejo Vila", "email": "c.bermejo@gmail.com", "phone": "+34 633 333 333", "employment": "Desempleado", "monthly_income": 900, "room_price": 750, "income_ratio": 1.2, "references": 0, "has_guarantor": false, "score": 15, "status": "Rechazado", "created_at": "2026-04-20T09:00:00Z" },
+    { "id": "LEAD-004", "full_name": "María Flores Campos", "email": "m.flores@gmail.com", "phone": "+34 644 444 444", "employment": "Empleada", "monthly_income": 2400, "room_price": 950, "income_ratio": 2.5, "references": 2, "has_guarantor": true, "score": 68, "status": "Revisión Manual", "created_at": "2026-04-24T16:45:00Z" },
+    { "id": "LEAD-005", "full_name": "Andrés Vidal Puig", "email": "a.vidal@gmail.com", "phone": "+34 655 555 555", "employment": "Empleado", "monthly_income": 3200, "room_price": 950, "income_ratio": 3.4, "references": 3, "has_guarantor": true, "score": 91, "status": "Contrato Enviado", "created_at": "2026-04-21T11:00:00Z" }
+  ],
+  "contracts": [
+    { "id": "CONT-001", "tenant_id": "TENANT-001", "room_id": "ROOM-101", "start_date": "2026-01-15", "end_date": "2027-01-14", "monthly_rent": 750, "deposit": 1500, "pdf_url": "#", "status": "Firmado" },
+    { "id": "CONT-002", "tenant_id": "TENANT-002", "room_id": "ROOM-102", "start_date": "2026-02-01", "end_date": "2027-01-31", "monthly_rent": 950, "deposit": 1900, "pdf_url": "#", "status": "Firmado" },
+    { "id": "CONT-003", "tenant_id": "TENANT-003", "room_id": "ROOM-103", "start_date": "2025-12-01", "end_date": "2026-11-30", "monthly_rent": 1200, "deposit": 2400, "pdf_url": "#", "status": "Firmado" },
+    { "id": "CONT-004", "tenant_id": "TENANT-004", "room_id": "ROOM-104", "start_date": "2026-03-01", "end_date": "2027-02-28", "monthly_rent": 750, "deposit": 1500, "pdf_url": "#", "status": "Firmado" },
+    { "id": "CONT-005", "tenant_id": "TENANT-005", "room_id": "ROOM-201", "start_date": "2026-01-20", "end_date": "2027-01-19", "monthly_rent": 850, "deposit": 1700, "pdf_url": "#", "status": "Firmado" }
+  ],
+  "payments": [
+    { "id": "PAY-001", "tenant_id": "TENANT-001", "amount": 750, "date": "2026-04-05", "type": "Renta", "status": "Pagado" },
+    { "id": "PAY-002", "tenant_id": "TENANT-002", "amount": 950, "date": "2026-04-03", "type": "Renta", "status": "Pagado" },
+    { "id": "PAY-003", "tenant_id": "TENANT-003", "amount": 1200, "date": "2026-04-01", "type": "Renta", "status": "Pagado" },
+    { "id": "PAY-004", "tenant_id": "TENANT-004", "amount": 750, "date": "2026-04-10", "type": "Renta", "status": "Pendiente" },
+    { "id": "PAY-005", "tenant_id": "TENANT-005", "amount": 850, "date": "2026-03-20", "type": "Renta", "status": "Pagado" },
+    { "id": "PAY-006", "tenant_id": "TENANT-006", "amount": 1350, "date": "2026-03-01", "type": "Renta", "status": "Pagado" },
+    { "id": "PAY-007", "tenant_id": "TENANT-002", "amount": 950, "date": "2026-03-03", "type": "Renta", "status": "Pagado" },
+    { "id": "PAY-008", "tenant_id": "TENANT-001", "amount": 750, "date": "2026-03-05", "type": "Renta", "status": "Pagado" },
+    { "id": "PAY-009", "tenant_id": "TENANT-004", "amount": 750, "date": "2026-03-10", "type": "Renta", "status": "Vencido" },
+    { "id": "PAY-010", "tenant_id": "TENANT-006", "amount": 280, "date": "2026-04-22", "type": "Cargo", "status": "Pendiente", "note": "Daño colchón (inspección salida)" }
+  ],
+  "incidents": [
+    { "id": "INC-001", "room_id": "ROOM-101", "tenant_id": "TENANT-001", "description": "Fuga de agua en el baño — salpicadura en la pared desde el grifo del lavabo.", "priority": "Alta", "status": "Abierta", "technician_id": "TEC-001", "sla_hours": 24, "created_at": "2026-04-19T08:30:00Z", "updated_at": "2026-04-19T09:00:00Z" },
+    { "id": "INC-002", "room_id": "ROOM-202", "tenant_id": null, "description": "El sistema de calefacción no enciende. La habitación está en mantenimiento pero necesita reparación antes de nuevo alquiler.", "priority": "Media", "status": "En Proceso", "technician_id": "TEC-002", "sla_hours": 48, "created_at": "2026-04-23T11:00:00Z", "updated_at": "2026-04-24T14:00:00Z" },
+    { "id": "INC-003", "room_id": "ROOM-103", "tenant_id": "TENANT-003", "description": "Cerradura de la puerta principal con dificultad al girar la llave. El inquilino reporta que tarda varios minutos en abrir.", "priority": "Alta", "status": "Abierta", "technician_id": "TEC-003", "sla_hours": 24, "created_at": "2026-04-20T16:45:00Z", "updated_at": "2026-04-20T17:00:00Z" },
+    { "id": "INC-004", "room_id": "ROOM-104", "tenant_id": "TENANT-004", "description": "Bombilla fundida en el escritorio de trabajo.", "priority": "Baja", "status": "Resuelta", "technician_id": "TEC-003", "sla_hours": 72, "created_at": "2026-04-22T10:00:00Z", "updated_at": "2026-04-23T15:30:00Z", "resolved_at": "2026-04-23T15:30:00Z" },
+    { "id": "INC-005", "room_id": "ROOM-201", "tenant_id": "TENANT-005", "description": "Se observan pequeñas filtraciones en el techo cerca de la ventana cuando llueve.", "priority": "Alta", "status": "Abierta", "technician_id": "TEC-001", "sla_hours": 24, "created_at": "2026-04-24T18:00:00Z", "updated_at": "2026-04-24T18:15:00Z" },
+    { "id": "INC-006", "room_id": "ROOM-102", "tenant_id": "TENANT-002", "description": "Presión de agua baja en la ducha.", "priority": "Media", "status": "Resuelta", "technician_id": "TEC-001", "sla_hours": 48, "created_at": "2026-04-15T09:00:00Z", "updated_at": "2026-04-17T11:00:00Z", "resolved_at": "2026-04-17T11:00:00Z" }
+  ],
+  "inspections": [
+    { "id": "INSP-001", "room_id": "ROOM-101", "tenant_id": "TENANT-001", "type": "Check-in", "date": "2026-01-15", "ai_score": 95, "findings": [], "billable_items": [], "notes": "Habitación en perfecto estado. Sin daños previos. Inventario completo." },
+    { "id": "INSP-002", "room_id": "ROOM-203", "tenant_id": "TENANT-006", "type": "Check-out", "date": "2026-04-20", "ai_score": 68, "findings": ["Mancha oscura en colchón (lado derecho)", "Toallas de baño faltantes (2 unidades)", "Marca en la pared junto a la puerta"], "billable_items": [{ "item": "Colchón — limpieza profunda", "qty": 1, "unit_price": 180, "total": 180 }, { "item": "Toallas — reposición", "qty": 2, "unit_price": 25, "total": 50 }, { "item": "Pintura — retoque pared", "qty": 1, "unit_price": 50, "total": 50 }], "notes": "Se detectan 3 elementos con cargo aplicable. Total: €280." },
+    { "id": "INSP-003", "room_id": "ROOM-201", "tenant_id": "TENANT-005", "type": "Check-in", "date": "2026-01-20", "ai_score": 92, "findings": ["Pequeño arañazo en escritorio (preexistente, documentado)"], "billable_items": [], "notes": "Estado general muy bueno. Arañazo en escritorio documentado como preexistente." },
+    { "id": "INSP-004", "room_id": "ROOM-102", "tenant_id": "TENANT-002", "type": "Check-in", "date": "2026-02-01", "ai_score": 88, "findings": [], "billable_items": [], "notes": "Habitación en buen estado. Mobiliario completo y funcional." }
+  ],
+  "technicians": [
+    { "id": "TEC-001", "name": "Carlos Mendoza", "specialty": "Fontanería", "phone": "+34 600 111 222", "email": "c.mendoza@servicios.com", "active": true, "rating": 4.8 },
+    { "id": "TEC-002", "name": "Jorge Herrero", "specialty": "Electricidad", "phone": "+34 600 333 444", "email": "j.herrero@servicios.com", "active": true, "rating": 4.6 },
+    { "id": "TEC-003", "name": "Pedro Sánchez", "specialty": "General", "phone": "+34 600 555 666", "email": "p.sanchez@servicios.com", "active": true, "rating": 4.5 }
+  ],
+  "kpi_history": [
+    { "date": "2026-03-26", "occupancy_rate": 75, "revenue": 5500, "open_incidents": 4, "resolved": 2 },
+    { "date": "2026-03-27", "occupancy_rate": 75, "revenue": 5500, "open_incidents": 3, "resolved": 3 },
+    { "date": "2026-03-28", "occupancy_rate": 75, "revenue": 5500, "open_incidents": 3, "resolved": 3 },
+    { "date": "2026-03-29", "occupancy_rate": 75, "revenue": 5500, "open_incidents": 2, "resolved": 4 },
+    { "date": "2026-03-30", "occupancy_rate": 75, "revenue": 5500, "open_incidents": 2, "resolved": 4 },
+    { "date": "2026-03-31", "occupancy_rate": 75, "revenue": 5500, "open_incidents": 1, "resolved": 5 },
+    { "date": "2026-04-01", "occupancy_rate": 87.5, "revenue": 6100, "open_incidents": 1, "resolved": 5 },
+    { "date": "2026-04-02", "occupancy_rate": 87.5, "revenue": 6100, "open_incidents": 2, "resolved": 5 },
+    { "date": "2026-04-03", "occupancy_rate": 87.5, "revenue": 6100, "open_incidents": 2, "resolved": 6 },
+    { "date": "2026-04-04", "occupancy_rate": 87.5, "revenue": 6100, "open_incidents": 1, "resolved": 7 },
+    { "date": "2026-04-05", "occupancy_rate": 87.5, "revenue": 6100, "open_incidents": 2, "resolved": 7 },
+    { "date": "2026-04-06", "occupancy_rate": 87.5, "revenue": 6100, "open_incidents": 2, "resolved": 7 },
+    { "date": "2026-04-07", "occupancy_rate": 87.5, "revenue": 6100, "open_incidents": 3, "resolved": 7 },
+    { "date": "2026-04-08", "occupancy_rate": 87.5, "revenue": 6100, "open_incidents": 3, "resolved": 8 },
+    { "date": "2026-04-09", "occupancy_rate": 87.5, "revenue": 6240, "open_incidents": 2, "resolved": 8 },
+    { "date": "2026-04-10", "occupancy_rate": 87.5, "revenue": 6240, "open_incidents": 2, "resolved": 8 },
+    { "date": "2026-04-11", "occupancy_rate": 87.5, "revenue": 6240, "open_incidents": 1, "resolved": 9 },
+    { "date": "2026-04-12", "occupancy_rate": 87.5, "revenue": 6240, "open_incidents": 1, "resolved": 9 },
+    { "date": "2026-04-13", "occupancy_rate": 87.5, "revenue": 6240, "open_incidents": 2, "resolved": 9 },
+    { "date": "2026-04-14", "occupancy_rate": 87.5, "revenue": 6240, "open_incidents": 2, "resolved": 10 },
+    { "date": "2026-04-15", "occupancy_rate": 87.5, "revenue": 6240, "open_incidents": 3, "resolved": 10 },
+    { "date": "2026-04-16", "occupancy_rate": 87.5, "revenue": 6240, "open_incidents": 2, "resolved": 11 },
+    { "date": "2026-04-17", "occupancy_rate": 87.5, "revenue": 6240, "open_incidents": 2, "resolved": 12 },
+    { "date": "2026-04-18", "occupancy_rate": 87.5, "revenue": 6240, "open_incidents": 3, "resolved": 12 },
+    { "date": "2026-04-19", "occupancy_rate": 87.5, "revenue": 6240, "open_incidents": 4, "resolved": 12 },
+    { "date": "2026-04-20", "occupancy_rate": 87.5, "revenue": 6240, "open_incidents": 4, "resolved": 12 },
+    { "date": "2026-04-21", "occupancy_rate": 87.5, "revenue": 6240, "open_incidents": 3, "resolved": 13 },
+    { "date": "2026-04-22", "occupancy_rate": 87.5, "revenue": 6240, "open_incidents": 3, "resolved": 13 },
+    { "date": "2026-04-23", "occupancy_rate": 87.5, "revenue": 6240, "open_incidents": 3, "resolved": 14 },
+    { "date": "2026-04-24", "occupancy_rate": 87.5, "revenue": 6240, "open_incidents": 3, "resolved": 14 }
+  ],
+  "revenue_by_property": [
+    { "month": "Feb", "prop001": 3450, "prop002": 2200 },
+    { "month": "Mar", "prop001": 3650, "prop002": 2200 },
+    { "month": "Abr", "prop001": 3650, "prop002": 2590 }
+  ],
+  "automation_runs": [
+    { "scenario": "Pre-onboarding & Intake", "scenario_id": "S01", "status": "Activo", "last_run": "2026-04-25T07:05:00Z", "next_run": "2026-04-25T19:00:00Z", "success_rate": 98, "avg_duration_ms": 1240, "runs_7d": 14, "errors_7d": 0 },
+    { "scenario": "Onboarding del Inquilino", "scenario_id": "S02", "status": "Activo", "last_run": "2026-04-24T12:30:00Z", "next_run": null, "success_rate": 95, "avg_duration_ms": 3800, "runs_7d": 2, "errors_7d": 0 },
+    { "scenario": "Gestión de Incidencias", "scenario_id": "S03", "status": "Activo", "last_run": "2026-04-25T06:48:00Z", "next_run": "2026-04-25T18:00:00Z", "success_rate": 91, "avg_duration_ms": 2100, "runs_7d": 6, "errors_7d": 1 },
+    { "scenario": "Inspección Visual IA", "scenario_id": "S04", "status": "Activo", "last_run": "2026-04-22T16:15:00Z", "next_run": null, "success_rate": 100, "avg_duration_ms": 8500, "runs_7d": 1, "errors_7d": 0 },
+    { "scenario": "Reporting KPI Diario", "scenario_id": "S05", "status": "Activo", "last_run": "2026-04-25T07:00:00Z", "next_run": "2026-04-26T07:00:00Z", "success_rate": 100, "avg_duration_ms": 4200, "runs_7d": 7, "errors_7d": 0 }
+  ],
+  "error_log": [
+    { "id": "ERR-001", "scenario_id": "S03", "scenario": "Gestión de Incidencias", "timestamp": "2026-04-23T14:22:00Z", "module": "airtable:CreateRecord", "error": "Field 'Technician' is required — record validation failed", "payload_summary": "room: ROOM-202, urgency: Media, source: WhatsApp" },
+    { "id": "ERR-002", "scenario_id": "S01", "scenario": "Pre-onboarding & Intake", "timestamp": "2026-04-20T10:05:00Z", "module": "google-apps-script:MakeAPICall", "error": "GAS endpoint timeout (30s) — lead scoring service unavailable", "payload_summary": "email: test_duplicate@example.com" }
+  ],
+  "activity_feed": [
+    { "id": "ACT-001", "type": "contract_signed", "message": "Contrato CONT-005 firmado por Ana García", "timestamp": "2026-04-20T11:30:00Z", "icon": "FileCheck" },
+    { "id": "ACT-002", "type": "incident_opened", "message": "Nueva incidencia INC-005 abierta — Filtraciones techo ROOM-201", "timestamp": "2026-04-24T18:00:00Z", "icon": "AlertTriangle" },
+    { "id": "ACT-003", "type": "inspection_completed", "message": "Inspección de salida INSP-002 completada — ROOM-203 (Score: 68)", "timestamp": "2026-04-22T16:15:00Z", "icon": "Camera" },
+    { "id": "ACT-004", "type": "lead_approved", "message": "Lead LEAD-005 (Andrés Vidal) aprobado automáticamente — Score: 91", "timestamp": "2026-04-21T11:05:00Z", "icon": "UserCheck" },
+    { "id": "ACT-005", "type": "payment_received", "message": "Renta abonada — Carmen Ruiz €750 (ROOM-101)", "timestamp": "2026-04-05T09:20:00Z", "icon": "Banknote" },
+    { "id": "ACT-006", "type": "incident_resolved", "message": "Incidencia INC-004 resuelta — Bombilla ROOM-104 (Pedro Sánchez)", "timestamp": "2026-04-23T15:30:00Z", "icon": "CheckCircle" },
+    { "id": "ACT-007", "type": "checkout_initiated", "message": "Proceso de salida iniciado — Roberto Molina (ROOM-203)", "timestamp": "2026-04-18T10:00:00Z", "icon": "LogOut" },
+    { "id": "ACT-008", "type": "lead_received", "message": "Nuevo lead recibido — María Flores Campos (Score: 68)", "timestamp": "2026-04-24T16:45:00Z", "icon": "UserPlus" }
+  ]
+}
