@@ -50,8 +50,8 @@
 - [x] **B7-B** Poblar `frontend/.env.local` con URL + anon key de Supabase
 - [x] **B7-C** Schema completo creado (13 tablas + enums + RLS anon-read) + seed data insertado
 - [x] **B7-D** `frontend/lib/supabase.ts` creado con helpers tipados; todas las pages.tsx migradas a async Supabase (build OK — 30 páginas)
-- [ ] **B7-E** Implementar autenticación — cero traces actuales (no Supabase Auth, no NextAuth)
-- [ ] **B7-F** Proteger rutas del dashboard con middleware de auth
+- [x] **B7-E** Supabase Auth implementado — usuario demo `admin@propertyops.demo` / `Demo1234!` creado en DB
+- [x] **B7-F** Rutas protegidas con `proxy.ts` (Next.js 16 convention) — login page en `/login` con `useActionState` + signIn/signOut server actions
 
 ---
 
@@ -86,7 +86,7 @@
 
 ## 🎯 Top #1 Objetivo Actual
 
-**Implementar Supabase Auth + middleware de protección de rutas (B7-E / B7-F).**
-La DB está conectada y todas las páginas sirven datos reales. El siguiente paso es instalar `@supabase/ssr`, crear el cliente de servidor/middleware, añadir página de login, y proteger `/dashboard` y todas las rutas hijas con `middleware.ts`.
+**Deploy a Vercel (B10).**
+B7 completado al 100%: DB real, todas las páginas migrando datos de Supabase, auth funcional con login/logout y rutas protegidas. El siguiente paso es ejecutar `/vrc` para hacer el deploy a Vercel y configurar las variables de entorno en el panel de Vercel.
 
-## 🧭 Bloque Activo: B7-E — Supabase Auth (login + middleware)
+## 🧭 Bloque Activo: B9 — Pre-deploy QA → B10 Deploy Vercel

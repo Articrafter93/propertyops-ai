@@ -4,9 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Users, UserCheck, Home, AlertTriangle,
-  LogOut, Camera, FileText, Activity, ChevronRight, Building2,
+  LogOut, Camera, Activity, ChevronRight, Building2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { signOut } from "@/app/auth/actions";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -19,7 +20,7 @@ const navItems = [
   { href: "/automatizaciones", label: "Automatizaciones", icon: Activity },
 ];
 
-export function Sidebar() {
+export function Sidebar({ userEmail }: { userEmail?: string }) {
   const pathname = usePathname();
 
   return (
@@ -74,19 +75,25 @@ export function Sidebar() {
 
       {/* Footer */}
       <div className="px-4 py-4 border-t" style={{ borderColor: "var(--sidebar-border)" }}>
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 mb-3">
           <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold" style={{ background: "var(--sidebar-primary)", color: "white" }}>
-            A
+            {userEmail ? userEmail[0].toUpperCase() : "A"}
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs font-medium truncate" style={{ color: "var(--sidebar-foreground)" }}>Admin</p>
-            <p className="text-[10px] truncate" style={{ color: "var(--sidebar-foreground)", opacity: 0.6 }}>propertyops.demo</p>
+            <p className="text-[10px] truncate" style={{ color: "var(--sidebar-foreground)", opacity: 0.6 }}>{userEmail ?? "propertyops.demo"}</p>
           </div>
         </div>
-        <div className="mt-3 flex items-center gap-1.5 px-2 py-1.5 rounded-md text-[10px] font-semibold" style={{ background: "rgba(42,173,160,0.15)", color: "#2aada0" }}>
-          <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
-          Demo — Datos de ejemplo
-        </div>
+        <form action={signOut}>
+          <button
+            type="submit"
+            className="w-full flex items-center gap-1.5 px-2 py-1.5 rounded-md text-[10px] font-semibold transition-colors hover:opacity-80"
+            style={{ background: "rgba(42,173,160,0.15)", color: "#2aada0" }}
+          >
+            <LogOut className="w-3 h-3" />
+            Cerrar sesión
+          </button>
+        </form>
       </div>
     </aside>
   );
