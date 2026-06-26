@@ -1,92 +1,84 @@
-# Registro Permanente de Retoma (Save State)
-> PropertyOps AI — Última auditoría: 2026-04-27
+# Registro Permanente de Retoma (Save State) - PropertyOps AI
 
----
+> Reconciliado por `/quefalta` (ANALYST) el 2026-06-25. Esta retoma contrastó los
+> pendientes contra el código real y detectó **drift entre la documentación y la
+> implementación**. Ver sección "Drift / Reconciliación pendiente".
 
-## FASE 1–3: Setup, Arquitectura y UI (COMPLETADO)
+## Metadata de Activo Digital
 
-- [x] Estructura del proyecto: frontend/ (Next.js 16), src/ (Apps Script, Make, webhooks)
-- [x] Stack definido: Next.js 16.2.4 + React 19 + Tailwind v4 + shadcn/ui (base-ui)
-- [x] Tipos TypeScript completos (14 interfaces en `frontend/lib/types.ts`)
-- [x] Seed JSON con datos demo coherentes (`frontend/data/seed.json`, fecha fija 2026-04-25)
-- [x] Layout con Sidebar + TopBar + DashboardShell
-- [x] GEMINI.md y baseline operativo configurados
-- [x] `.env*` en `.gitignore` — verificado
-- [x] `vercel.json` configurado (build desde `frontend/`, framework nextjs)
+- `tipo_cliente:` **PENDIENTE CRITICO** — no registrado. Es candidato de portafolio
+  (programa-portafolio-60) → presuntamente `ficticio`. Confirmar y registrar en `BRIEF.md`.
+- `categoria_activo_primaria:` **PENDIENTE CRITICO** — falta `CLASIFICACION-ACTIVO.md`.
+  Tentativa: Plataforma SaaS con auth / dashboard operativo (área privada multi-rol).
+- `confianza_clasificacion:` baja (sin artefacto formal).
+- `revision_final_perfiles_requeridos:` **PENDIENTE** — derivar tras clasificar.
 
----
+## Estado de gates (reconciliado contra fuentes)
 
-## FASE 4–5: Pantallas del Dashboard (COMPLETADO — datos estáticos)
+| Gate | Declarado (QUE-FALTA/REDO) | Fuente real | Veredicto |
+|---|---|---|---|
+| GATE 1.0 (correo corporativo Modo A) | — | `comunicacion-cliente/2026-06-25-01-correo-corporativo-inicial.md` | **CREADO** (contrato vinculante, firmado) |
+| GATE 1 (briefing) | APROBADO | `01-BRIEFING.md` existe | OK provisional |
+| GATE 3 (stack) | APROBADO | `00-ARQUITECTURA-PROYECTO.md` L137: **`PENDIENTE`** | **CONTRADICCIÓN — no cerrado** |
+| GATE 0 (seguridad 2.0) | pendiente | sin evidencia | PENDIENTE |
 
-- [x] `/dashboard` — KPIs, 2 gráficas Recharts (ocupación + ingresos), activity feed
-- [x] `/onboarding` — Kanban 4 columnas (leads), cards con chips de estado
-- [x] `/inquilinos` — tabla con links a expediente individual
-- [x] `/inquilinos/[id]` — tabs: Pagos / Incidencias / Documentos, contrato, generateStaticParams
-- [x] `/habitaciones` — grid por propiedad con links a detalle
-- [x] `/habitaciones/[id]` — info, inventario hardcodeado por room ID, historial inspecciones
-- [x] `/incidencias` — tabla semáforo SLA con lógica real de cálculo
-- [x] `/checkout` — wizard 4 pasos (hardcodeado en paso 3, TENANT-006 fijo)
-- [x] `/inspecciones` — tabla con score AI
-- [x] `/inspecciones/[id]` — score donut (Recharts client component), before/after placeholders, cargos
-- [x] `/automatizaciones` — estado escenarios Make + log de errores
-- [x] Scripts Google Apps Script: utils, lead_scoring, contract_generator, kpi_reporter, inspection, checkout, whatsapp_notifier, drive_manager (8 archivos .gs)
-- [x] Blueprints Make: intake, onboarding, incidents, ai-inspect, reporting (5 escenarios .json)
+## Verificado en código (auto-tachado en esta sesión)
 
----
+- [x] `.env.local` existe y `.env*` está en `.gitignore` (`.gitignore` L26-27, L40).
+- [x] TypeScript strict mode activo (`frontend/tsconfig.json` → `"strict": true`).
+- [x] Metadata base en `frontend/app/layout.tsx` (title + description + `<html lang="es">`).
+- [x] Briefing redactado (`01-BRIEFING.md`).
+- [x] Frontend scaffolded: 8 vistas dashboard (automatizaciones, checkout, dashboard,
+      habitaciones, incidencias, inquilinos, inspecciones, onboarding) + auth + login.
 
-## FASE 6: Interactividad y Handlers (PENDIENTE)
+## Pendientes de construcción (PASO 5+ — verificados como NO hechos)
 
-- [ ] **B6-A** Checkout wizard funcional — actualmente fijo en paso 3 con TENANT-006 hardcodeado; implementar navegación entre pasos con estado
-- [ ] **B6-B** Botón "Aprobar lead" en `/onboarding` — sin onClick handler
-- [ ] **B6-C** Botón "Rechazar lead" en `/onboarding` — sin onClick handler
-- [ ] **B6-D** Botón "Confirmar liquidación" en checkout — sin onClick handler
-- [ ] **B6-E** Badge "3 incidencias" en `Sidebar.tsx` — hardcodeado, debe ser dinámico (calculado desde seed/DB)
+- [ ] Ejecutar GATE 0 (Preflight seguridad 2.0).
+- [ ] Crear `robots.txt` y `sitemap.xml` (`public/` solo tiene SVGs por defecto).
+- [ ] Agregar security headers en `frontend/next.config.ts` (config vacío).
+- [ ] Implementar política de privacidad (`/privacidad`) y consentimiento (no existe la ruta).
+- [ ] Ejecutar `npm run lint` y `npm run build` sin errores (sin evidencia — requiere pasada funcional).
 
----
+## Pendientes críticos de gobernanza (faltan artefactos canónicos)
 
-## FASE 7: Conexión de Datos Reales
+- [x] **Registrar `tipo_cliente`** en `BRIEF.md` → `ficticio` (2026-06-25).
+- [x] **Crear `CLASIFICACION-ACTIVO.md`** → primaria `04`, secundarias `06`/`15`, `confirmada`/`media` (2026-06-25).
+- [x] **Crear `MATRIZ PRODUCCION FULL-STACK`** en `PLAN.md` (2026-06-25). Capas `bloqueada`: Security, Compliance, Testing.
+- [x] **Crear `HERRAMIENTAS-EXTERNAS.md`** (manifiesto + gate de disponibilidad) (2026-06-25).
+- [ ] **Ejecutar `WF-011`** (pasada funcional) → hoy `PENDIENTE`; requerido para cerrar GATE 9.
+- [x] **Correo corporativo inicial** (Cliente Exigente Modo A) creado → GATE 1.0 contrato firmado (2026-06-25).
+- [x] **Carpeta renombrada** `comunicacion-clientes/` → `comunicacion-cliente/` (singular canónica).
+- [ ] **Keep-alive Supabase** (gate duro de portafolio) — configurar cron + schema-pooling.
 
-- [x] **B7-A** Crear proyecto Supabase `propertyops-ai` (ID: `raipjqyjzguaejopxyvd`, us-east-1)
-- [x] **B7-B** Poblar `frontend/.env.local` con URL + anon key de Supabase
-- [x] **B7-C** Schema completo creado (13 tablas + enums + RLS anon-read) + seed data insertado
-- [x] **B7-D** `frontend/lib/supabase.ts` creado con helpers tipados; todas las pages.tsx migradas a async Supabase (build OK — 30 páginas)
-- [x] **B7-E** Supabase Auth implementado — usuario demo `admin@propertyops.demo` / `Demo1234!` creado en DB
-- [x] **B7-F** Rutas protegidas con `proxy.ts` (Next.js 16 convention) — login page en `/login` con `useActionState` + signIn/signOut server actions
+## Drift / Reconciliación (estado)
 
----
+- [x] **GATE 3 contradictorio → RESUELTO:** cerrado `APROBADO` de forma consistente en
+      `MATRIZ-BACKEND.md` v2.0.0 y `00-ARQUITECTURA-PROYECTO.md` v2.0.0 (2026-06-25).
+- [x] **Stack de datos divergente (keystone) → RESUELTO:** decisión del developer = **Supabase**.
+      `00-ARQUITECTURA-PROYECTO.md` y `MATRIZ-BACKEND.md` reconciliados a Supabase (Postgres + Auth);
+      integraciones externas marcadas como SIMULADO (mock sandbox), honesto para `ficticio`.
+- [x] **`REDO-TRACKING.md` reconciliado:** stack y rutas `ORIGIN/DESTINATION` actualizados a la ubicación real.
+- [x] **Narrativa propagada a Supabase + reframe honesto (2026-06-25):** `README.md`, `docs/ARCHITECTURE.md`,
+      `docs/DATABASE.md`, `01-BRIEFING.md`, `INSTRUCCIONES-CLIENTE-*.md` reescritos. **Hallazgo material:**
+      el backend (Make/GAS/WhatsApp/OpenAI/Drive) descrito como "✅ Implementado" NO existe en el repo
+      (`src/` solo tiene `ai/` y `automation/` vacíos). Reframe aplicado: dashboard Next.js+Supabase = real;
+      backend multi-servicio = diseño/blueprint NO construido. Elimina red flag de `reclutador-exigente`.
+- [ ] **`PLAN.md` es template vacío** (placeholder `flashcore-portafolio-`, `YYYY-MM-DD`, stack sin llenar).
+      Rellenar con el alcance/stack real ya construido (Supabase).
+- [ ] **`comunicacion-clientes/` (plural)** vs carpeta canónica `comunicacion-cliente/` (singular); está vacía.
 
-## FASE 8: Integraciones Externas (PENDIENTE)
+## Siguiente paso
 
-- [ ] **B8-A** Conectar simulador de webhooks (`src/webhooks/simulator.js`) con frontend real
-- [ ] **B8-B** Activar escenarios Make con webhooks reales (URLs de producción)
-- [ ] **B8-C** Conectar Google Apps Script con Sheets/Drive real del cliente
-- [ ] **B8-D** Integrar WhatsApp Business API (notificaciones de incidencias y checkout)
-- [ ] **B8-E** Integrar OpenAI / GPT-4o Vision para fotos reales de inspecciones (reemplazar SVG placeholders)
-- [ ] **B8-F** Conectar Google Drive para almacenamiento de contratos generados
+Keystone resuelto (stack = Supabase, GATE 3 cerrado). Próximo frente: cerrar los **artefactos
+de gobernanza faltantes** (`tipo_cliente`, `CLASIFICACION-ACTIVO.md`, `MATRIZ FULL-STACK`,
+correo corporativo Modo A) y el **backlog de construcción** (GATE 0, SEO, privacidad, headers,
+lint/build). Ver listas "Pendientes críticos de gobernanza" y "Pendientes de construcción".
 
----
-
-## FASE 9: Pre-deploy y QA (PENDIENTE)
-
-- [ ] **B9-A** Ejecutar `/vuln` (DevSecOps SAST/SCA) antes de deploy
-- [ ] **B9-B** Ejecutar `/revision-final` (GATE 9) — pasada funcional obligatoria
-- [ ] **B9-C** Validar build de producción: `cd frontend && npm run build` sin errores
-- [ ] **B9-D** Imágenes reales en inspecciones (before/after actualmente son SVG placeholder)
-
----
-
-## FASE 10: Deploy Vercel (PENDIENTE)
-
-- [ ] **B10-A** Ejecutar `/vrc` para deploy desde CLI Vercel MCP
-- [ ] **B10-B** Verificar que Vercel Authentication está DESACTIVADA si el link es público (Settings → Deployment Protection)
-- [ ] **B10-C** Configurar variables de entorno en Vercel (no exponer en chat — usar `vercel env pull`)
-- [ ] **B10-D** Smoke test en URL de producción
-
----
-
-## 🎯 Top #1 Objetivo Actual
-
-**Deploy a Vercel (B10).**
-B7 completado al 100%: DB real, todas las páginas migrando datos de Supabase, auth funcional con login/logout y rutas protegidas. El siguiente paso es ejecutar `/vrc` para hacer el deploy a Vercel y configurar las variables de entorno en el panel de Vercel.
-
-## 🧭 Bloque Activo: B9 — Pre-deploy QA → B10 Deploy Vercel
+## Log de Sesión (Save State)
+- `CURRENT_STEP=PASO_5`
+- `BLOCK_ACTIVE=B4`
+- `RECONCILED=2026-06-25` (por `/quefalta` — keystone Supabase + GATE 3)
+- `GATE 1.0:` FALTA (correo corporativo Modo A ausente)
+- `GATE 1:` APROBADO provisional (briefing)
+- `GATE 3:` **APROBADO** (reconciliado a Supabase, 2026-06-25)
+- `MATRIZ FULL-STACK / WF-011:` AUSENTE (pendiente crítico)

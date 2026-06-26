@@ -1,48 +1,56 @@
-# PropertyOps AI — Arquitectura del Sistema
+# PropertyOps AI — Arquitectura del Sistema (Diseño Objetivo)
 
 Plataforma de automatización de ciclo completo para gestión de habitaciones en alquiler: desde la captación del candidato hasta la devolución de depósito, con IA multimodal, WhatsApp Business y dashboard en tiempo real.
+
+> **Estado de implementación (honesto).** Este documento describe la **arquitectura objetivo
+> (diseño)**, no el estado construido. Lo **implementado** en el repo es el **dashboard
+> Next.js 16 + Supabase** con datos de demostración sembrados. La capa de automatización
+> multi-servicio (Make · GAS · WhatsApp · OpenAI · Drive) descrita abajo es el **blueprint
+> de diseño y NO está construida** como integraciones vivas. La capa de datos objetivo es
+> **Supabase (PostgreSQL)**, no Airtable. Los diagramas representan el flujo propuesto.
 
 ---
 
 ## Stack tecnológico
 
-| Capa | Tecnología | Rol |
-|------|-----------|-----|
-| Orquestación | Make (Integromat) | 5 escenarios que conectan todos los servicios |
-| Base de datos operativa | Airtable (16 tablas) | Fuente única de verdad |
-| Lógica de negocio | Google Apps Script (GAS) | 7 scripts: scoring, contratos, inspección, KPIs, checkout, WhatsApp, Drive |
-| Documentos | Google Drive + Google Docs | Expedientes, contratos PDF, fotos de inspección |
-| Comunicación | WhatsApp Business Cloud API | Notificaciones transaccionales bidireccionales |
-| IA | OpenAI GPT-4o + GPT-4o-mini | Inspección visual multimodal · NLP de incidencias |
-| Dashboard | Next.js 16 + Tailwind + Recharts | 8 pantallas estáticas (SSG) desplegadas en Vercel |
-| Firma electrónica | DocuSign / PandaDoc (placeholder) | Firma de contratos |
+| Capa | Tecnología | Estado |
+|------|-----------|--------|
+| Dashboard | Next.js 16 + TypeScript + Tailwind v4 + Recharts | ✅ Implementado |
+| Datos + Auth | Supabase (PostgreSQL + Supabase Auth) | ✅ Implementado (con datos seed) |
+| Orquestación | Make (Integromat) — 5 escenarios | 📐 Diseño (no construido) |
+| Lógica de negocio | Google Apps Script (GAS) — 7 scripts | 📐 Diseño (no construido) |
+| Documentos | Google Drive + Google Docs | 📐 Diseño (no construido) |
+| Comunicación | WhatsApp Business Cloud API | 📐 Diseño (no construido) |
+| IA | OpenAI GPT-4o + GPT-4o-mini | 📐 Diseño (no construido) |
+| Firma electrónica | DocuSign / PandaDoc | 📐 Diseño (placeholder) |
+| Despliegue | Vercel | 🎯 Objetivo |
 
 ---
 
-## Flujo end-to-end
+## Flujo end-to-end (diseño propuesto)
 
 ```mermaid
 flowchart TD
     WF([Formulario Web]) -->|POST webhook| S01[Escenario 01\nIntake & Scoring]
     S01 -->|GAS doPost| GAS_SCORE[lead_scoring.gs\nScore 0-100]
     GAS_SCORE --> S01
-    S01 -->|Create/Update| AT_LEADS[(Airtable\nLeads)]
+    S01 -->|Create/Update| AT_LEADS[(Supabase\nLeads)]
     S01 -->|CreateFolder| DRIVE[(Google Drive\nExpedientes)]
     S01 -->|Template WA| WA[WhatsApp\nBusiness API]
 
     AT_LEADS -->|Watch Status=Approved| S02[Escenario 02\nOnboarding]
     S02 -->|GAS doPost| GAS_CONT[contract_generator.gs\nPDF contrato]
     GAS_CONT --> DRIVE
-    S02 -->|Create| AT_CONT[(Airtable\nContracts)]
-    S02 -->|Update| AT_ROOMS[(Airtable\nRooms → Occupied)]
-    S02 -->|Update| AT_TENANTS[(Airtable\nTenants → Active)]
+    S02 -->|Create| AT_CONT[(Supabase\nContracts)]
+    S02 -->|Update| AT_ROOMS[(Supabase\nRooms → Occupied)]
+    S02 -->|Update| AT_TENANTS[(Supabase\nTenants → Active)]
     S02 -->|Template WA| WA
 
     WA -->|Inbound message| S03[Escenario 03\nIncident Mgmt]
     S03 -->|GPT-4o-mini NLP| OAI_MINI[OpenAI\nGPT-4o-mini]
     OAI_MINI --> S03
-    S03 -->|Create| AT_INC[(Airtable\nIncidents)]
-    S03 -->|Search| AT_TECH[(Airtable\nTechnicians)]
+    S03 -->|Create| AT_INC[(Supabase\nIncidents)]
+    S03 -->|Search| AT_TECH[(Supabase\nTechnicians)]
     S03 -->|Template WA x2| WA
 
     DRIVE -->|New photo| S04[Escenario 04\nAI Inspection]
@@ -50,15 +58,15 @@ flowchart TD
     GAS_INSP -->|API call| OAI_VISION[OpenAI\nGPT-4o Vision]
     OAI_VISION --> GAS_INSP
     GAS_INSP --> S04
-    S04 -->|Create| AT_INSP[(Airtable\nVisual_Inspections)]
-    S04 -->|Create| AT_PAY[(Airtable\nPayments)]
+    S04 -->|Create| AT_INSP[(Supabase\nVisual_Inspections)]
+    S04 -->|Create| AT_PAY[(Supabase\nPayments)]
     S04 -->|Template WA| WA
 
     CRON([CRON 07:00]) --> S05[Escenario 05\nKPI Reporting]
     S05 -->|GAS doPost| GAS_KPI[kpi_reporter.gs\n12 KPIs]
     GAS_KPI -->|Read all tables| AT_LEADS & AT_INC & AT_TENANTS & AT_PAY
     GAS_KPI --> S05
-    S05 -->|Create| AT_KPI[(Airtable\nDaily_KPIs)]
+    S05 -->|Create| AT_KPI[(Supabase\nDaily_KPIs)]
     S05 -->|HTML email| GMAIL[Gmail\nResumen gestor]
 
     AT_KPI & AT_INC & AT_TENANTS & AT_ROOMS -->|Static seed| DASH[Next.js Dashboard\nVercel]
@@ -71,7 +79,7 @@ flowchart TD
 ```mermaid
 graph LR
     subgraph GAS Scripts
-        U[utils.gs\nCONFIG · airtableRequest\nwriteAuditLog · generateId]
+        U[utils.gs\nCONFIG · dbRequest\nwriteAuditLog · generateId]
         LS[lead_scoring.gs]
         CG[contract_generator.gs]
         KR[kpi_reporter.gs]
@@ -81,7 +89,7 @@ graph LR
         DM[drive_manager.gs]
     end
 
-    subgraph Airtable Tables
+    subgraph Supabase Tables
         TL[(Leads)]
         TT[(Tenants)]
         TR[(Rooms)]
@@ -134,14 +142,14 @@ graph LR
 | # | Escenario | Trigger | Pasos | GAS llamado |
 |---|-----------|---------|-------|-------------|
 | 01 | Pre-onboarding & Intake | Webhook POST form | 10 | `lead_scoring.gs` |
-| 02 | Tenant Onboarding | Airtable Watch (Lead=Approved) | 11 | `contract_generator.gs` |
+| 02 | Tenant Onboarding | Supabase Watch (Lead=Approved) | 11 | `contract_generator.gs` |
 | 03 | Incident Management | WhatsApp Inbound | 12 | `whatsapp_notifier.gs` |
 | 04 | AI Visual Inspection | Drive Watch (new photo) | 11 | `inspection.gs` |
 | 05 | Daily KPI Reporting | CRON 07:00 | 8 | `kpi_reporter.gs` |
 
 ---
 
-## Base de datos Airtable (16 tablas)
+## Base de datos Supabase (16 tablas)
 
 Ver [DATABASE.md](DATABASE.md) para el schema completo con todos los campos, tipos y relaciones.
 
@@ -184,5 +192,5 @@ Properties ──< Rooms ──< Beds
 - **Secrets:** Variables de entorno en Make + `CONFIG` en GAS. Nunca en código fuente.
 - **PII:** Carpetas Drive con acceso restringido por inquilino. `shareFileWithTenant()` solo añade viewer.
 - **Audit trail:** Todo write/update pasa por `writeAuditLog()` en `utils.gs` → tabla `Audit_Log`.
-- **Idempotencia:** Todos los escenarios Make tienen `idempotency_key` con ventana temporal y guard field en Airtable.
+- **Idempotencia:** Todos los escenarios Make tienen `idempotency_key` con ventana temporal y guard field en Supabase.
 - **Reintentos:** Strategy `exponential backoff` (3 intentos, inicio 2-5s) en todos los escenarios.
