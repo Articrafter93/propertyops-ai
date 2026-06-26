@@ -1,7 +1,5 @@
 import { TopBar } from "@/components/layout/TopBar";
-import { StatusBadge } from "@/components/ui/StatusBadge";
 import { ScoreBadge } from "@/components/ui/ScoreBadge";
-import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { getLeads } from "@/lib/supabase";
 import { formatRelativeTime } from "@/lib/seed";

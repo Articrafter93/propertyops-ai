@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { getAutomationRuns, getErrorLogs } from "@/lib/supabase";
 import { formatRelativeTime } from "@/lib/seed";
-import { Activity, AlertCircle, Clock, Zap } from "lucide-react";
+import { Activity, AlertCircle, Clock, Zap, Info } from "lucide-react";
 
 function msToReadable(ms: number): string {
   if (ms < 1000) return `${ms}ms`;
@@ -19,8 +19,21 @@ export default async function AutomatizacionesPage() {
 
   return (
     <>
-      <TopBar title="Monitor de Automatizaciones" subtitle="Estado en tiempo real de los escenarios Make" />
+      <TopBar title="Monitor de Automatizaciones" subtitle="Estado de los escenarios (datos de demostración)" />
       <main className="flex-1 overflow-y-auto p-6 bg-background space-y-5">
+        {/* Demo notice — MUST-5 honestidad de portafolio */}
+        <div className="flex items-start gap-3 p-3.5 rounded-lg bg-blue-50 border border-blue-200">
+          <Info className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+          <div>
+            <p className="text-xs font-semibold text-blue-800">Datos de demostración sandbox</p>
+            <p className="text-xs text-blue-700 mt-0.5">
+              Este monitor muestra datos simulados que representan cómo funcionaría la integración con Make (Integromat)
+              en producción. Los escenarios y métricas son ficticios — no existe una integración viva real.
+              Ver <code className="text-[10px] font-mono">docs/ARCHITECTURE.md</code> para el diseño objetivo.
+            </p>
+          </div>
+        </div>
+
         {/* Summary */}
         <div className="grid grid-cols-3 gap-4">
           <Card className="p-4 shadow-none border border-border flex items-center gap-3">
@@ -120,6 +133,11 @@ export default async function AutomatizacionesPage() {
             <h3 className="text-sm font-semibold text-foreground">Log de errores recientes</h3>
           </div>
           <div className="divide-y divide-border">
+            {error_log.length === 0 && (
+              <div className="px-5 py-10 text-center">
+                <p className="text-xs text-muted-foreground">Sin errores recientes — todos los escenarios operan correctamente.</p>
+              </div>
+            )}
             {error_log.map((err) => (
               <div key={err.id} className="px-5 py-4 hover:bg-muted/20">
                 <div className="flex items-start justify-between gap-3 mb-1.5">

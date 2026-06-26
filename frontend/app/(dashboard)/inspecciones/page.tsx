@@ -4,7 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { getInspections, getRooms, getTenants } from "@/lib/supabase";
 import { formatDate } from "@/lib/seed";
-import { ExternalLink, Camera } from "lucide-react";
+import { ExternalLink, Camera, Eye } from "lucide-react";
 
 function AiScoreBadge({ score }: { score: number }) {
   const config = score >= 80
@@ -43,6 +43,18 @@ export default async function InspeccionesPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
+              {inspections.length === 0 && (
+                <tr>
+                  <td colSpan={8} className="py-20 text-center">
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                        <Eye className="w-5 h-5 text-muted-foreground" />
+                      </div>
+                      <p className="text-sm text-muted-foreground">Sin inspecciones registradas</p>
+                    </div>
+                  </td>
+                </tr>
+              )}
               {inspections.map((insp) => {
                 const room = roomMap[insp.room_id];
                 const tenant = insp.tenant_id ? tenantMap[insp.tenant_id] : null;

@@ -2,10 +2,8 @@ import { TopBar } from "@/components/layout/TopBar";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { tenants, getRoom, getContract, formatCurrency, formatDate } from "@/lib/seed";
-import { Check, Circle, Clock, LogOut, FileText, Camera, CreditCard } from "lucide-react";
-
-const CHECKOUT_TENANT_ID = "TENANT-006";
+import { tenants, getRoom, getContract, formatCurrency } from "@/lib/seed";
+import { Check, Circle, LogOut, FileText, Camera, CreditCard } from "lucide-react";
 
 const STEPS = [
   { id: 1, label: "Aviso de salida", icon: LogOut, done: true },

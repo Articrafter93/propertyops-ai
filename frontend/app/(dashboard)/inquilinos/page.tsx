@@ -4,7 +4,7 @@ import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getTenants, getRooms, getContracts } from "@/lib/supabase";
 import { formatDate } from "@/lib/seed";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Users } from "lucide-react";
 
 export default async function InquilinosPage() {
   const [tenants, rooms, contracts] = await Promise.all([getTenants(), getRooms(), getContracts()]);
@@ -29,6 +29,18 @@ export default async function InquilinosPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
+              {tenants.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="py-20 text-center">
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                        <Users className="w-5 h-5 text-muted-foreground" />
+                      </div>
+                      <p className="text-sm text-muted-foreground">Sin inquilinos registrados</p>
+                    </div>
+                  </td>
+                </tr>
+              )}
               {tenants.map((tenant) => {
                 const room = roomMap[tenant.room_id];
                 const contract = contractMap[tenant.id];

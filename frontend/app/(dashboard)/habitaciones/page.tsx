@@ -4,7 +4,7 @@ import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Card } from "@/components/ui/card";
 import { getRooms, getProperties, getTenants } from "@/lib/supabase";
 import { formatCurrency } from "@/lib/seed";
-import { Home, User, DollarSign } from "lucide-react";
+import { Home, User, DollarSign, Building2 } from "lucide-react";
 
 export default async function HabitacionesPage() {
   const [rooms, properties, tenants] = await Promise.all([getRooms(), getProperties(), getTenants()]);
@@ -16,7 +16,16 @@ export default async function HabitacionesPage() {
     <>
       <TopBar title="Habitaciones" subtitle={`${rooms.length} unidades · ${occupied} ocupadas · ${available} disponibles`} />
       <main className="flex-1 overflow-y-auto p-6 bg-background">
-        {properties.map((prop) => {
+        {properties.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-4">
+                <Building2 className="w-6 h-6 text-muted-foreground" />
+              </div>
+              <p className="text-sm font-medium text-foreground mb-1">Sin propiedades registradas</p>
+              <p className="text-xs text-muted-foreground">No hay propiedades ni habitaciones en el sistema.</p>
+            </div>
+          )}
+          {properties.map((prop) => {
           const propRooms = rooms.filter((r) => r.property_id === prop.id);
           return (
             <div key={prop.id} className="mb-8">
@@ -25,6 +34,11 @@ export default async function HabitacionesPage() {
                 <span className="text-xs text-muted-foreground">{prop.address} · {prop.city}</span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {propRooms.length === 0 && (
+                    <div className="col-span-full border-2 border-dashed border-border rounded-lg p-8 text-center">
+                      <p className="text-xs text-muted-foreground">Sin habitaciones en esta propiedad</p>
+                    </div>
+                  )}
                 {propRooms.map((room) => {
                   const tenant = room.tenant_id ? tenantMap[room.tenant_id] : null;
                   return (

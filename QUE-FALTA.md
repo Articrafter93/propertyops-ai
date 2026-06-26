@@ -34,10 +34,15 @@
 ## Pendientes de construcción (PASO 5+ — verificados como NO hechos)
 
 - [ ] Ejecutar GATE 0 (Preflight seguridad 2.0).
-- [ ] Crear `robots.txt` y `sitemap.xml` (`public/` solo tiene SVGs por defecto).
-- [ ] Agregar security headers en `frontend/next.config.ts` (config vacío).
-- [ ] Implementar política de privacidad (`/privacidad`) y consentimiento (no existe la ruta).
-- [ ] Ejecutar `npm run lint` y `npm run build` sin errores (sin evidencia — requiere pasada funcional).
+- [x] Crear `robots.txt` y `sitemap.xml` (`frontend/public/`) — 2026-06-25.
+- [x] Agregar security headers en `frontend/next.config.ts` — 2026-06-25.
+- [x] Implementar política de privacidad (`/privacidad`) — ruta pública, SEO, PII pattern, MUST-4 — 2026-06-25.
+- [x] Login mock multi-rol recruiter-friendly (MUST-1): selector de cuentas demo, password prellenada, logout visible — 2026-06-25.
+- [x] Control de acceso por rol (MUST-2): `proxy.ts` + `lib/roles.ts` + incidencias filtradas por `DEMO_TECNICO_ID` — 2026-06-25.
+- [x] Empty states y loading states (MUST-3): `loading.tsx` compartido + estados vacíos en habitaciones, inquilinos, incidencias, inspecciones, automatizaciones — 2026-06-25.
+- [x] Aviso honestidad portafolio en automatizaciones (MUST-5): banner "Datos de demostración sandbox" — 2026-06-25.
+- [x] `npm run lint` — PASS (0 errores, 0 warnings) — 2026-06-25.
+- [x] `npm run build` — PASS (14 rutas, 0 errores) — 2026-06-25.
 
 ## Pendientes críticos de gobernanza (faltan artefactos canónicos)
 
@@ -69,16 +74,19 @@
 
 ## Siguiente paso
 
-Keystone resuelto (stack = Supabase, GATE 3 cerrado). Próximo frente: cerrar los **artefactos
-de gobernanza faltantes** (`tipo_cliente`, `CLASIFICACION-ACTIVO.md`, `MATRIZ FULL-STACK`,
-correo corporativo Modo A) y el **backlog de construcción** (GATE 0, SEO, privacidad, headers,
-lint/build). Ver listas "Pendientes críticos de gobernanza" y "Pendientes de construcción".
+Construcción MUST completada (MUST-1 a MUST-5), lint y build limpios. Próximo frente: **WF-011 + VFH** — levantar `rend` local, ejercer el checklist §6, obtener confirmación humana del developer y ejecutar `revision-final` para cerrar GATE 9. Después: keep-alive Supabase (gate duro de portafolio).
 
 ## Log de Sesión (Save State)
-- `CURRENT_STEP=PASO_5`
-- `BLOCK_ACTIVE=B4`
+- `CURRENT_STEP=PASO_9`
+- `BLOCK_ACTIVE=B9`
 - `RECONCILED=2026-06-25` (por `/quefalta` — keystone Supabase + GATE 3)
-- `GATE 1.0:` FALTA (correo corporativo Modo A ausente)
-- `GATE 1:` APROBADO provisional (briefing)
+- `GATE 1.0:` APROBADO (correo corporativo Modo A — 2026-06-25)
+- `GATE 1:` APROBADO (briefing — 2026-06-25)
 - `GATE 3:` **APROBADO** (reconciliado a Supabase, 2026-06-25)
-- `MATRIZ FULL-STACK / WF-011:` AUSENTE (pendiente crítico)
+- `MUST-1 a MUST-5:` **COMPLETOS** (2026-06-25)
+- `lint/build:` **PASS 0/0** (2026-06-25)
+- `MATRIZ FULL-STACK / WF-011:` PENDIENTE (próximo paso)
+- `SELLO PARCIAL:` NO EMITIDO (requiere WF-011 + VFH + revision-final)
+
+## Session history
+- 2026-06-25: Sesión de construcción — governance artifacts commit (f81ba5b), MUST-1 login multi-rol, MUST-2 RBAC via proxy.ts, MUST-3 empty/loading states, MUST-4 /privacidad, MUST-5 automatizaciones banner. lint PASS, build PASS (14 rutas).

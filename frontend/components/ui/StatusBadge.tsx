@@ -1,7 +1,5 @@
 import { cn } from "@/lib/utils";
 
-type Variant = "room" | "tenant" | "lead" | "contract" | "payment" | "incident-priority" | "incident-status" | "automation";
-
 const statusMap: Record<string, { label: string; classes: string }> = {
   /* Room status */
   Available: { label: "Disponible", classes: "bg-green-50 text-green-700 border-green-200" },
