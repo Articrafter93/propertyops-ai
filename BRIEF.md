@@ -3,7 +3,8 @@
 <!-- Metadata de proyecto (no altera el brief literal del cliente, abajo) -->
 **`tipo_cliente`:** `ficticio` (candidato de portafolio · programa-portafolio-60 · sandbox-first, datos ficticios)
 **Categoría de activo:** `04-Aplicaciones-web-empresariales` (ver `CLASIFICACION-ACTIVO.md`)
-**Capa de datos:** Supabase (Postgres + Auth) — backend multi-servicio = diseño objetivo no construido
+**Capa de datos:** `seed.json` estático (sin DB viva) + auth mock local por cookie — backend multi-servicio = diseño objetivo no construido. Supabase eliminado (Nota de Cambio N.º 01, 2026-07-02)
+**`idioma_render`:** `toggle` (bilingüe EN/ES, **inglés por defecto** — piso de portafolio; toggle a español). i18n zero-dependency por cookie (Nota de Cambio N.º 02, 2026-07-02)
 
 ---
 

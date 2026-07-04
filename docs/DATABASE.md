@@ -1,11 +1,12 @@
 # PropertyOps AI - Modelo de Datos (Diseño Conceptual)
 _16 entidades · Modelo operativo completo para gestión de habitaciones en alquiler_
 
-> **Estado.** Este es el **modelo de datos conceptual objetivo** (capa de datos = **Supabase /
-> PostgreSQL**). La demo construida implementa un **subconjunto** de estas entidades como datos
-> sembrados (`frontend/lib/types.ts` + `frontend/data/seed.json`). Los tipos listados abajo
-> usan nomenclatura descriptiva (heredada del diseño original); en Supabase se mapean a columnas
-> Postgres (`text`, `numeric`, `timestamptz`, `boolean`, relaciones por FK, etc.).
+> **Estado.** Este es el **modelo de datos conceptual objetivo** (capa de datos de producción
+> propuesta = **PostgreSQL**). La demo construida implementa un **subconjunto** de estas entidades
+> como **datos estáticos** (`frontend/lib/types.ts` + `frontend/data/seed.json`), sin base de datos
+> viva. Los tipos listados abajo usan nomenclatura descriptiva (heredada del diseño original); en
+> una implementación PostgreSQL se mapearían a columnas (`text`, `numeric`, `timestamptz`,
+> `boolean`, relaciones por FK, etc.).
 
 ---
 

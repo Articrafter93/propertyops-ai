@@ -1,11 +1,11 @@
 User-agent: *
 Disallow: /dashboard
 Disallow: /onboarding
-Disallow: /inquilinos
-Disallow: /habitaciones
-Disallow: /incidencias
+Disallow: /tenants
+Disallow: /rooms
+Disallow: /incidents
 Disallow: /checkout
-Disallow: /inspecciones
-Disallow: /automatizaciones
+Disallow: /inspections
+Disallow: /automations
 Allow: /login
-Allow: /privacidad
+Allow: /privacy

@@ -12,9 +12,10 @@ interface KpiCardProps {
   iconColor?: string;
   trend?: "up" | "down" | "neutral";
   sub?: string;
+  deltaSuffix?: string;
 }
 
-export function KpiCard({ label, value, unit, delta, icon: Icon, iconColor = "#1a7070", trend = "neutral", sub }: KpiCardProps) {
+export function KpiCard({ label, value, unit, delta, icon: Icon, iconColor = "#1a7070", trend = "neutral", sub, deltaSuffix }: KpiCardProps) {
   const isPositive = trend === "up";
   const isNegative = trend === "down";
 
@@ -41,7 +42,7 @@ export function KpiCard({ label, value, unit, delta, icon: Icon, iconColor = "#1
           !isPositive && !isNegative && "bg-muted text-muted-foreground"
         )}>
           {isPositive ? <TrendingUp className="w-3 h-3" /> : isNegative ? <TrendingDown className="w-3 h-3" /> : <Minus className="w-3 h-3" />}
-          <span>{delta > 0 ? "+" : ""}{delta}% vs mes anterior</span>
+          <span>{delta > 0 ? "+" : ""}{delta}% {deltaSuffix}</span>
         </div>
       )}
     </Card>

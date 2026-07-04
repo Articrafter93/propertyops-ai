@@ -1,18 +1,22 @@
 import { Sidebar } from "@/components/layout/Sidebar";
-import { createClient } from "@/lib/supabase-server";
+import { getSession } from "@/lib/auth";
 import { getRole } from "@/lib/roles";
+import { getLocale } from "@/lib/i18n/server";
+import { I18nProvider } from "@/lib/i18n/client";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  const role = getRole(user?.email);
+  const session = await getSession();
+  const role = getRole(session?.email);
+  const locale = await getLocale();
 
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
-      <Sidebar userEmail={user?.email} role={role} />
-      <div className="flex flex-col flex-1 overflow-hidden">
-        {children}
+    <I18nProvider locale={locale}>
+      <div className="flex h-screen overflow-hidden bg-background">
+        <Sidebar userEmail={session?.email} role={role} />
+        <div className="flex flex-col flex-1 overflow-hidden">
+          {children}
+        </div>
       </div>
-    </div>
+    </I18nProvider>
   );
 }

@@ -1,15 +1,18 @@
 # MATRIZ-BACKEND.md - PropertyOps AI
 
-Version: 2.0.0
-Fecha: 2026-06-25 (reconciliado por STRATEGIST — capa de datos real = Supabase)
+Version: 3.0.0
+Fecha: 2026-07-02 (reconciliado por REPARADOR — Supabase eliminado; capa de datos = seed estático, auth = mock local)
 Proyecto: Plataforma de gestion de alquileres por habitacion (portafolio, `tipo_cliente: ficticio`)
 
-> **Nota de reconciliacion (v2.0.0):** la v1 documentaba Airtable + Make + GAS como backend
-> "real". La implementacion en `frontend/` usa **Supabase (Postgres + Auth)** como unica capa
-> de datos y persistencia. Las integraciones externas (Make, Google Apps Script, WhatsApp,
-> OpenAI, Drive) **no estan implementadas como integraciones vivas**: se representan como
-> datos sembrados en Supabase (monitor de automatizaciones, logs de error) para una demo
-> sandbox-first de portafolio. Esta matriz refleja la realidad construida, no la aspiracional.
+> **Nota de reconciliacion (v3.0.0):** la v2.0.0 documentaba **Supabase (Postgres + Auth)** como
+> unica capa de datos y persistencia. Supabase fue **eliminado por completo** (Nota de Cambio
+> N.º 01, 2026-07-02): era innecesario —las 11 vistas del dashboard ya consumian `seed.json`
+> estatico— y estaba roto en local (`.env.local` sin claves). La realidad construida ahora es:
+> **datos = `seed.json` estatico tipado** (sin base de datos viva) + **autenticacion = sesion
+> mock local por cookie** gateada por `NEXT_PUBLIC_DEMO_AUTH`. Las integraciones externas
+> (Make, GAS, WhatsApp, OpenAI, Drive) siguen **representadas como datos sembrados en el seed**
+> (monitor de automatizaciones, logs de error), no como integraciones vivas. Esta matriz refleja
+> la realidad construida, no la aspiracional.
 
 ---
 
@@ -20,60 +23,60 @@ Proyecto: Plataforma de gestion de alquileres por habitacion (portafolio, `tipo_
 - **Proveedor:** OpenAI (GPT-4o / GPT-4o-mini) — *aspiracional*
 - **Estado:** SIMULADO (mock sandbox) — no hay llamadas vivas a OpenAI en el codigo
 - **Uso narrado:** scoring de leads, inspeccion visual, NLP de incidencias
-- **Realidad:** los resultados (scores, clasificaciones) viven como datos sembrados en Supabase
+- **Realidad:** los resultados (scores, clasificaciones) viven como datos en `seed.json`
 
 ### 2. Autenticacion (Auth)
 - **¿Requerida?** SI
-- **Proveedor:** **Supabase Auth**
+- **Proveedor:** **Mock local por cookie** (no SaaS de auth)
 - **Estado:** CONFIRMADO (implementado)
-- **Uso:** login multi-rol (admin / tecnico de mantenimiento), gestion de sesiones SSR
-- **Archivos:** `frontend/lib/supabase.ts`, `frontend/lib/supabase-server.ts`, `frontend/app/auth/actions.ts`, `frontend/app/login/`
+- **Uso:** login multi-rol (admin / tecnico de mantenimiento); sesion en cookie `httpOnly` `propertyops_demo_session`, gate `NEXT_PUBLIC_DEMO_AUTH=enabled`; role-gating en `proxy.ts`
+- **Archivos:** `frontend/lib/auth.ts`, `frontend/lib/demo-accounts.ts`, `frontend/lib/roles.ts`, `frontend/app/auth/actions.ts`, `frontend/proxy.ts`, `frontend/app/login/`
 
 ### 3. Base de Datos
-- **¿Requerida?** SI
-- **Proveedor:** **Supabase (PostgreSQL)** — fuente unica de verdad
+- **¿Requerida?** NO (para este build sandbox)
+- **Proveedor:** **`seed.json` estatico** (sin base de datos viva)
 - **Estado:** CONFIRMADO (implementado)
-- **Modelo:** entidades en `frontend/lib/types.ts` (Property, Room, Tenant, Lead, Contract, Payment, Incident, Inspection, AutomationRun, ErrorLog, etc.); seed en `frontend/data/seed.json`
-- **Pendiente ficticio:** schema-pooling + keep-alive segun `doctrina/reglas/db-ficticio-supabase-pooling.md`
+- **Modelo:** entidades en `frontend/lib/types.ts` (Property, Room, Tenant, Lead, Contract, Payment, Incident, Inspection, AutomationRun, ErrorLog, etc.); datos en `frontend/data/seed.json`, expuestos tipados por `frontend/lib/seed.ts`
+- **Nota:** fecha "now" fija (2026-04-25) para semaforos SLA consistentes. Sin keep-alive ni schema-pooling: no hay servicio que pausar
 
 ### 4. Storage (Almacenamiento)
 - **¿Requerida?** SI (conceptual)
-- **Proveedor:** **Supabase Storage** (objetivo) — Google Drive era aspiracional
+- **Proveedor:** Google Drive / almacenamiento de objetos — *aspiracional*
 - **Estado:** SIMULADO (mock sandbox) — fotos de inspeccion / PDFs representados como referencias en seed
 - **Uso narrado:** expedientes de inquilinos, contratos PDF, fotos de inspeccion antes/despues
 
 ### 5. Pagos (Pasarela)
 - **¿Requerida?** NO
 - **Proveedor:** N/A (registro contable, no procesamiento)
-- **Estado:** NO APLICA — los pagos se registran como filas en Supabase (`Payment`), sin pasarela
+- **Estado:** NO APLICA — los pagos se representan como filas en el seed (`Payment`), sin pasarela
 
 ### 6. Email / Comunicaciones
 - **¿Requerida?** SI (conceptual)
 - **Proveedor:** WhatsApp Business Cloud API + Gmail — *aspiracional*
-- **Estado:** SIMULADO (mock sandbox) — notificaciones representadas como eventos/datos en Supabase
+- **Estado:** SIMULADO (mock sandbox) — notificaciones representadas como eventos/datos en seed
 - **Uso narrado:** avisos transaccionales WhatsApp, resumen diario de KPIs
 
 ### 7. CRM
 - **¿Requerida?** SI (integrado)
-- **Proveedor:** **Supabase** (tablas `Lead`, `Tenant`, `Contract`, `Incident`)
-- **Estado:** CONFIRMADO (implementado como datos)
+- **Proveedor:** **Datos en `seed.json`** (`Lead`, `Tenant`, `Contract`, `Incident`)
+- **Estado:** CONFIRMADO (implementado como datos estaticos)
 - **Uso:** gestion de leads, inquilinos, contratos e incidencias en el dashboard
 
 ### 8. CMS (Content Management)
 - **¿Requerida?** NO
 - **Proveedor:** N/A
-- **Estado:** NO APLICA — contenido del dashboard es dinamico desde Supabase
+- **Estado:** NO APLICA — contenido del dashboard es dinamico desde el seed tipado
 
 ### 9. Analitica
 - **¿Requerida?** SI (interna)
-- **Proveedor:** KPIs en Supabase + visualizacion **Recharts** en el dashboard Next.js
+- **Proveedor:** KPIs en `seed.json` + visualizacion **Recharts** en el dashboard Next.js
 - **Estado:** CONFIRMADO (implementado)
 - **Uso:** KPIs de ocupacion, pagos, incidencias; graficos y donuts de score
 
 ### 10. Otros (Orquestacion)
 - **¿Requerida?** SI (conceptual)
 - **Proveedor:** Make (Integromat) — *aspiracional*, 5 escenarios narrados
-- **Estado:** SIMULADO (mock sandbox) — el "Monitor de Automatizaciones" lee `automation_runs` y `error_logs` sembrados en Supabase (`getAutomationRuns`, `getErrorLogs`)
+- **Estado:** SIMULADO (mock sandbox) — el "Monitor de Automatizaciones" lee `automation_runs` y `error_log` del seed (`getAutomationRuns`, `getErrorLogs`)
 - **Escenarios narrados:** 01-Intake, 02-Onboarding, 03-Incidents, 04-Inspection, 05-Reporting
 
 ---
@@ -82,11 +85,11 @@ Proyecto: Plataforma de gestion de alquileres por habitacion (portafolio, `tipo_
 
 | Rubro | Proveedor real | Estado |
 |---|---|---|
-| Auth | Supabase Auth | CONFIRMADO |
-| DB | Supabase (PostgreSQL) | CONFIRMADO |
-| CRM | Supabase (tablas) | CONFIRMADO |
-| Analitica | Supabase + Recharts | CONFIRMADO |
-| Storage | Supabase Storage (objetivo) | SIMULADO |
+| Auth | Mock local por cookie | CONFIRMADO |
+| DB | `seed.json` estatico (sin DB viva) | CONFIRMADO |
+| CRM | Datos en seed | CONFIRMADO |
+| Analitica | Seed + Recharts | CONFIRMADO |
+| Storage | Google Drive (objetivo) | SIMULADO |
 | API/IA | OpenAI | SIMULADO (mock) |
 | Email/Comms | WhatsApp + Gmail | SIMULADO (mock) |
 | Orquestacion | Make (5 escenarios) | SIMULADO (mock) |
@@ -100,10 +103,11 @@ Proyecto: Plataforma de gestion de alquileres por habitacion (portafolio, `tipo_
 ## GATE 3 - Checklist de Arquitectura
 
 - [x] Framework/Lenguaje: Next.js 16 (App Router) + TypeScript + Tailwind CSS v4
-- [x] Backend/datos real: **Supabase (Postgres + Auth)**
-- [x] Integraciones externas (Make/GAS/WhatsApp/OpenAI/Drive): **simuladas como datos en Supabase** (sandbox de portafolio, honesto)
+- [x] Backend/datos real: **`seed.json` estatico** (sin base de datos viva)
+- [x] Auth real: **mock local por cookie** (gate `NEXT_PUBLIC_DEMO_AUTH`)
+- [x] Integraciones externas (Make/GAS/WhatsApp/OpenAI/Drive): **simuladas como datos en el seed** (sandbox de portafolio, honesto)
 - [x] CMS: No requiere
-- [x] Pasarela de pago: No (registro contable en Supabase)
+- [x] Pasarela de pago: No (registro contable en seed)
 - [x] Docker: Innecesario (serverless / Vercel)
 - [x] Visualizacion: Recharts
 - [x] Plataforma de despliegue: Vercel
@@ -114,11 +118,12 @@ Proyecto: Plataforma de gestion de alquileres por habitacion (portafolio, `tipo_
 ## Decisiones de Stack Cerradas
 
 - **Framework:** Next.js 16 (App Router) + TypeScript + Tailwind CSS v4 + shadcn
-- **Datos + Auth:** Supabase (PostgreSQL + Supabase Auth) — capa real
-- **Integraciones externas:** simuladas como datos sembrados en Supabase (no integraciones vivas)
+- **Datos:** `seed.json` estatico tipado (`lib/seed.ts`) — sin base de datos viva
+- **Auth:** mock local por cookie (`lib/auth.ts` + `lib/roles.ts`), gate `NEXT_PUBLIC_DEMO_AUTH`
+- **Integraciones externas:** simuladas como datos sembrados en el seed (no integraciones vivas)
 - **Visualizacion:** Recharts
 - **Deploy:** Vercel (conectado a GitHub)
 
 ---
 
-## GATE 3 Status: APROBADO (2026-06-25, reconciliado a Supabase)
+## GATE 3 Status: APROBADO (2026-07-02, reconciliado a seed estatico + auth mock local)

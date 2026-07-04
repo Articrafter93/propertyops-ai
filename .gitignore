@@ -29,6 +29,11 @@ yarn-error.log*
 # vercel
 .vercel
 
+# transient test/inspection output (never versioned)
+.playwright-mcp/
+frontend/tmp/
+tmp/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

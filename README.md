@@ -1,110 +1,131 @@
 # PropertyOps AI
 
-Dashboard ejecutivo para la gestión de habitaciones en alquiler: cubre conceptualmente todo el ciclo —desde la captación del candidato hasta la devolución del depósito— con una interfaz tipo "mesa de control" sobre datos en tiempo real.
+Executive dashboard for managing rooms-for-rent operations — covering the full lifecycle from applicant intake to deposit return — through a "control-room" interface over operational data.
 
-> **Alcance de este build (honesto).** Lo que está **construido y funcionando** es el
-> **dashboard Next.js 16 + Supabase** con datos de demostración. La automatización
-> multi-servicio (Make / Google Apps Script / WhatsApp / OpenAI / Drive) es el
-> **diseño de arquitectura objetivo**, documentado en `docs/`, pero **no está implementada
-> como integraciones vivas** en este repositorio: en la demo, las "automatizaciones" se
-> representan como datos sembrados en Supabase (monitor de escenarios, logs de error).
-> Proyecto de portafolio `tipo_cliente: ficticio` (sandbox-first, datos ficticios).
+> **Scope of this build (honest).** What is **built and running** is the **Next.js 16
+> dashboard** on **static demonstration data** (`seed.json`) with **local mock authentication**
+> via cookie. The multi-service automation layer (Make / Google Apps Script / WhatsApp / OpenAI /
+> Drive) is the **target architecture design**, documented under `docs/`, but is **not implemented
+> as live integrations** in this repository: in the demo, the "automations" are represented as
+> seeded data (scenario monitor, error logs). All data is fictitious — this is a sandbox
+> demonstration environment, not a production system.
 
 ---
 
-## Stack (lo construido)
+## Stack (what's built)
 
-| Capa | Tecnología | Estado |
+| Layer | Technology | Status |
 |------|-----------|--------|
-| Dashboard | Next.js 16 (App Router) · TypeScript · Tailwind v4 · shadcn/ui · Recharts | ✅ Implementado |
-| Datos + Auth | Supabase (PostgreSQL + Supabase Auth) | ✅ Implementado |
-| Datos demo | Seed estático (`frontend/data/seed.json`, fecha fija 2026-04-25) | ✅ Implementado |
-| Despliegue | Vercel | 🎯 Objetivo |
+| Dashboard | Next.js 16 (App Router) · TypeScript · Tailwind v4 · shadcn/ui · Recharts | ✅ Implemented |
+| Data | Static seed (`frontend/data/seed.json`, fixed date 2026-04-25) typed via `lib/seed.ts` | ✅ Implemented |
+| Auth | Local mock via cookie (`lib/auth.ts`, gated by `NEXT_PUBLIC_DEMO_AUTH`) | ✅ Implemented |
+| Deployment | Vercel | 🎯 Target |
 
-## Arquitectura objetivo (diseño, no implementada en este build)
+### Key technical decisions (the *why*)
 
-| Capa | Tecnología | Estado |
+- **Next.js 16 App Router + React Server Components** — data is read on the server and streamed as
+  HTML, so the dashboard renders without shipping the dataset or a client data-fetching layer to the
+  browser. Route groups (`(dashboard)`) share one authenticated shell without repeating layout code.
+- **Static typed seed instead of a live database** — this build is a portfolio demonstration, so a
+  real Postgres/Supabase instance would add operational cost (and free-tier pausing) with no benefit
+  for an evaluator. The data is fully typed (`lib/types.ts`) and accessed through an async data layer
+  (`lib/data.ts`), so swapping the seed for a real DB later is a single-layer change, not a rewrite.
+- **Local mock auth over a real IdP** — role-based access (admin vs. maintenance technician) is
+  enforced at a **real boundary** (Next.js middleware, `proxy.ts`), not just hidden in the UI. The
+  mock is gated by `NEXT_PUBLIC_DEMO_AUTH` so it can never ship enabled to a real production build.
+- **Zero-dependency i18n (EN/ES)** — a cookie-based dictionary (`lib/i18n/`) with English as the
+  default avoids pulling a full i18n framework for a two-locale toggle; formatters are locale-aware
+  and `<html lang>` is set dynamically.
+
+## Target architecture (design, not implemented in this build)
+
+| Layer | Technology | Status |
 |------|-----------|--------|
-| Orquestación | Make (Integromat) — 5 escenarios | 📐 Diseño (no construido) |
-| Lógica de negocio | Google Apps Script — 7 scripts | 📐 Diseño (no construido) |
-| Documentos | Google Drive + Google Docs | 📐 Diseño (no construido) |
-| Comunicación | WhatsApp Business Cloud API | 📐 Diseño (no construido) |
-| IA | OpenAI GPT-4o (visión) + GPT-4o-mini (NLP) | 📐 Diseño (no construido) |
+| Orchestration | Make (Integromat) — 5 scenarios | 📐 Design (not built) |
+| Business logic | Google Apps Script — 7 scripts | 📐 Design (not built) |
+| Documents | Google Drive + Google Docs | 📐 Design (not built) |
+| Communication | WhatsApp Business Cloud API | 📐 Design (not built) |
+| AI | OpenAI GPT-4o (vision) + GPT-4o-mini (NLP) | 📐 Design (not built) |
 
-Ver [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) para el diseño end-to-end propuesto.
-
----
-
-## Frontend Dashboard (8 vistas, implementadas)
-
-Next.js 16 App Router, datos seed desde Supabase, diseño "mesa de control" (teal/petróleo):
-
-- **Dashboard ejecutivo** — KPIs, tendencia 30 días, activity feed
-- **Onboarding Kanban** — pipeline de leads con score y acciones
-- **Inquilinos** — tabla con expediente individual (pagos, incidencias, docs)
-- **Habitaciones** — grid por propiedad + inventario por habitación
-- **Incidencias** — semáforo SLA en tiempo real, filtros, expansión de fila
-- **Checkout** — wizard 4-pasos (aviso → inspección → cargos → cierre)
-- **Inspecciones** — slider antes/después, donut de AI score, tabla de cargos
-- **Automatizaciones** — monitor de escenarios (datos simulados) + log de errores
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the proposed end-to-end design.
 
 ---
 
-## Estructura del proyecto (real)
+## Frontend dashboard (8 views, implemented)
+
+Next.js 16 App Router, data from the typed static seed, "control-room" design (teal/petrol):
+
+- **Executive dashboard** — KPIs, 30-day trend, activity feed
+- **Onboarding Kanban** — lead pipeline with score and actions
+- **Tenants** — table with individual file (payments, incidents, documents)
+- **Rooms** — grid by property + per-room inventory
+- **Incidents** — real-time SLA traffic-light, filters, row expansion
+- **Checkout** — 4-step wizard (notice → inspection → charges → close)
+- **Inspections** — before/after slider, AI-score donut, charges table
+- **Automations** — scenario monitor (simulated data) + error log
+
+---
+
+## Project structure (real)
 
 ```
 PropertyOps AI/
-├── frontend/                    # Next.js 16 dashboard (lo construido)
+├── frontend/                    # Next.js 16 dashboard (what's built)
 │   ├── app/
-│   │   ├── (dashboard)/         # Route group — 8 secciones
-│   │   │   ├── dashboard/  onboarding/  inquilinos/[id]/
-│   │   │   ├── habitaciones/[id]/  incidencias/  checkout/
-│   │   │   ├── inspecciones/[id]/  automatizaciones/
-│   │   ├── auth/                # Server actions de Supabase Auth
-│   │   ├── login/              # Login multi-rol
-│   │   ├── layout.tsx
-│   │   └── page.tsx             # Redirect → /dashboard
+│   │   ├── (dashboard)/         # Route group — 8 sections
+│   │   │   ├── dashboard/  onboarding/  tenants/[id]/
+│   │   │   ├── rooms/[id]/  incidents/  checkout/
+│   │   │   ├── inspections/[id]/  automations/
+│   │   │   ├── auth/                # Auth server actions (local mock)
+│   │   │   ├── login/              # Multi-role login
+│   │   │   ├── privacy/            # Privacy policy (public route)
+│   │   │   ├── layout.tsx
+│   │   │   └── page.tsx             # Redirect → /dashboard
 │   ├── components/
 │   │   ├── charts/              # OccupancyTrendChart, RevenueByPropertyChart
 │   │   ├── layout/              # Sidebar, TopBar, DashboardShell
 │   │   └── ui/                  # KpiCard, StatusBadge, SlaIndicator, BeforeAfterSlider
 │   ├── data/
-│   │   └── seed.json            # Datos demo (fecha fija: 2026-04-25)
+│   │   └── seed.json            # Demo data (fixed date: 2026-04-25)
 │   └── lib/
-│       ├── supabase.ts          # Cliente browser
-│       ├── supabase-server.ts   # Cliente SSR
-│       ├── seed.ts              # Re-exportación tipada + helpers
-│       └── types.ts             # Interfaces TypeScript de las entidades
+│       ├── seed.ts              # Data source: typed seed.json + helpers
+│       ├── data.ts              # Data-access layer (async API over the seed)
+│       ├── auth.ts              # Local mock session via cookie
+│       ├── demo-accounts.ts     # Demo accounts (login selector)
+│       ├── roles.ts             # Role mapping + role-gating
+│       ├── i18n/                # Zero-dependency EN/ES dictionary
+│       └── types.ts             # TypeScript interfaces for the entities
 ├── docs/
-│   ├── ARCHITECTURE.md          # Diseño de arquitectura objetivo (Mermaid)
-│   └── DATABASE.md              # Modelo de datos conceptual (16 entidades)
-└── src/                         # Reservado para backend objetivo (no implementado)
-    ├── ai/                      # (vacío)
-    └── automation/              # (vacío)
+│   ├── ARCHITECTURE.md          # Target architecture design (Mermaid)
+│   └── DATABASE.md              # Conceptual data model (16 entities)
+└── src/                         # Reserved for target backend (not implemented)
+    ├── ai/                      # (empty)
+    └── automation/              # (empty)
 ```
 
 ---
 
-## Ejecución local
+## Run locally
 
 ```bash
 cd frontend
-npm install
-npm run dev
+npm install && npm run dev
 # → http://localhost:3000/dashboard
 ```
 
-Requiere variables de entorno de Supabase en `frontend/.env.local`
-(ver `.env.example` cuando esté disponible):
+Requires a single variable in `frontend/.env.local` (see `frontend/.env.example`) to enable the
+local mock demo login:
 
 ```bash
-NEXT_PUBLIC_SUPABASE_URL=...
-NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+NEXT_PUBLIC_DEMO_AUTH=enabled
 ```
+
+Demo accounts (password pre-filled `Demo1234!`): `admin@propertyops.demo` (admin → `/dashboard`),
+`tecnico@propertyops.demo` (technician → `/incidents`).
 
 ---
 
-## Documentación
+## Documentation
 
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — diseño de arquitectura **objetivo** end-to-end (no implementado en este build).
-- [docs/DATABASE.md](docs/DATABASE.md) — modelo de datos conceptual (16 entidades); la demo implementa un subconjunto en Supabase.
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — **target** end-to-end architecture design (not implemented in this build).
+- [docs/DATABASE.md](docs/DATABASE.md) — conceptual data model (16 entities); the demo implements a subset as static data in `seed.json`.

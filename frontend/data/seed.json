@@ -127,7 +127,7 @@
     { "scenario": "Reporting KPI Diario", "scenario_id": "S05", "status": "Activo", "last_run": "2026-04-25T07:00:00Z", "next_run": "2026-04-26T07:00:00Z", "success_rate": 100, "avg_duration_ms": 4200, "runs_7d": 7, "errors_7d": 0 }
   ],
   "error_log": [
-    { "id": "ERR-001", "scenario_id": "S03", "scenario": "Gestión de Incidencias", "timestamp": "2026-04-23T14:22:00Z", "module": "airtable:CreateRecord", "error": "Field 'Technician' is required — record validation failed", "payload_summary": "room: ROOM-202, urgency: Media, source: WhatsApp" },
+    { "id": "ERR-001", "scenario_id": "S03", "scenario": "Gestión de Incidencias", "timestamp": "2026-04-23T14:22:00Z", "module": "postgres:CreateRecord", "error": "Field 'Technician' is required — record validation failed", "payload_summary": "room: ROOM-202, urgency: Medium, source: WhatsApp" },
     { "id": "ERR-002", "scenario_id": "S01", "scenario": "Pre-onboarding & Intake", "timestamp": "2026-04-20T10:05:00Z", "module": "google-apps-script:MakeAPICall", "error": "GAS endpoint timeout (30s) — lead scoring service unavailable", "payload_summary": "email: test_duplicate@example.com" }
   ],
   "activity_feed": [

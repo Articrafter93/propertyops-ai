@@ -10,27 +10,32 @@ import {
 import { cn } from "@/lib/utils";
 import { signOut } from "@/app/auth/actions";
 import type { UserRole } from "@/lib/roles";
+import { useDict } from "@/lib/i18n/client";
+import { LocaleToggle } from "@/components/LocaleToggle";
 
-const ADMIN_NAV = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/onboarding", label: "Onboarding", icon: UserCheck },
-  { href: "/inquilinos", label: "Inquilinos", icon: Users },
-  { href: "/habitaciones", label: "Habitaciones", icon: Home },
-  { href: "/incidencias", label: "Incidencias", icon: AlertTriangle, badge: 3 },
-  { href: "/checkout", label: "Checkout", icon: LogOut },
-  { href: "/inspecciones", label: "Inspecciones", icon: Camera },
-  { href: "/automatizaciones", label: "Automatizaciones", icon: Activity },
+type NavItem = { href: string; labelKey: keyof ReturnType<typeof useDict>["nav"]; icon: React.ComponentType<{ className?: string }>; badge?: number };
+
+const ADMIN_NAV: NavItem[] = [
+  { href: "/dashboard", labelKey: "dashboard", icon: LayoutDashboard },
+  { href: "/onboarding", labelKey: "onboarding", icon: UserCheck },
+  { href: "/tenants", labelKey: "tenants", icon: Users },
+  { href: "/rooms", labelKey: "rooms", icon: Home },
+  { href: "/incidents", labelKey: "incidents", icon: AlertTriangle, badge: 3 },
+  { href: "/checkout", labelKey: "checkout", icon: LogOut },
+  { href: "/inspections", labelKey: "inspections", icon: Camera },
+  { href: "/automations", labelKey: "automations", icon: Activity },
 ];
 
-const TECNICO_NAV: Array<{ href: string; label: string; icon: React.ComponentType<{ className?: string }>; badge?: number }> = [
-  { href: "/incidencias", label: "Mis Incidencias", icon: AlertTriangle },
+const TECNICO_NAV: NavItem[] = [
+  { href: "/incidents", labelKey: "myIncidents", icon: AlertTriangle },
 ];
 
 export function Sidebar({ userEmail, role }: { userEmail?: string; role?: UserRole }) {
   const pathname = usePathname();
+  const dict = useDict();
   const navItems = role === 'tecnico' ? TECNICO_NAV : ADMIN_NAV;
   const RoleIcon = role === 'tecnico' ? Wrench : ShieldCheck;
-  const roleLabel = role === 'tecnico' ? 'Técnico de Mantenimiento' : 'Administrador';
+  const roleLabel = role === 'tecnico' ? dict.roles.tecnico : dict.roles.admin;
 
   return (
     <aside className="flex flex-col w-60 shrink-0 h-full" style={{ background: "var(--sidebar)", borderRight: "1px solid var(--sidebar-border)" }}>
@@ -50,15 +55,16 @@ export function Sidebar({ userEmail, role }: { userEmail?: string; role?: UserRo
       </div>
 
       {/* Role badge */}
-      <div className="mx-3 mt-3 mb-1 flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-muted/40 border border-border">
-        <RoleIcon className="w-3 h-3 shrink-0" style={{ color: role === 'tecnico' ? '#7c3aed' : '#1a7070' }} />
-        <span className="text-[10px] font-medium text-muted-foreground truncate">{roleLabel}</span>
+      <div className="mx-3 mt-3 mb-1 flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-sidebar-accent border border-sidebar-border">
+        <RoleIcon className="w-3 h-3 shrink-0" style={{ color: role === 'tecnico' ? '#a78bfa' : '#2aada0' }} />
+        <span className="text-[10px] font-medium text-sidebar-foreground truncate">{roleLabel}</span>
       </div>
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-3 space-y-0.5 overflow-y-auto">
-        {navItems.map(({ href, label, icon: Icon, badge }) => {
+        {navItems.map(({ href, labelKey, icon: Icon, badge }) => {
           const isActive = pathname === href || (href !== "/dashboard" && pathname.startsWith(href));
+          const label = dict.nav[labelKey];
           return (
             <Link
               key={href}
@@ -86,9 +92,9 @@ export function Sidebar({ userEmail, role }: { userEmail?: string; role?: UserRo
         })}
       </nav>
 
-      {/* Footer with logout */}
-      <div className="px-4 py-4 border-t" style={{ borderColor: "var(--sidebar-border)" }}>
-        <div className="flex items-center gap-2.5 mb-3">
+      {/* Footer with locale toggle + logout */}
+      <div className="px-4 py-4 border-t space-y-3" style={{ borderColor: "var(--sidebar-border)" }}>
+        <div className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold" style={{ background: "var(--sidebar-primary)", color: "white" }}>
             {userEmail ? userEmail[0].toUpperCase() : "A"}
           </div>
@@ -97,6 +103,7 @@ export function Sidebar({ userEmail, role }: { userEmail?: string; role?: UserRo
             <p className="text-[10px] truncate" style={{ color: "var(--sidebar-foreground)", opacity: 0.6 }}>{userEmail ?? "propertyops.demo"}</p>
           </div>
         </div>
+        <LocaleToggle />
         <form action={signOut}>
           <button
             type="submit"
@@ -104,7 +111,7 @@ export function Sidebar({ userEmail, role }: { userEmail?: string; role?: UserRo
             style={{ background: "rgba(42,173,160,0.15)", color: "#2aada0" }}
           >
             <LogOut className="w-3 h-3" />
-            Cerrar sesión
+            {dict.nav.signOut}
           </button>
         </form>
       </div>

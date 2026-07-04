@@ -21,7 +21,7 @@ Proyecto: Plataforma de automatizacion para gestion de alquileres
 | `/inspecciones` | Inspecciones | Lista de inspecciones con AI score | Operativo |
 | `/inspecciones/[id]` | Detalle Inspeccion | Slider antes/despues, donut score, tabla cargos | Detalle |
 | `/automatizaciones` | Automatizaciones | Estado de 5 escenarios Make + error log | Admin |
-| `/login` | Login | Formulario de acceso con Supabase Auth | Auth |
+| `/login` | Login | Formulario de acceso (auth mock local por cookie) | Auth |
 | `/privacidad` | Privacidad | Politica de privacidad (Ley 1581) | Legal |
 
 ## 2. Componentes por Tipo de Pagina
@@ -90,9 +90,9 @@ Proyecto: Plataforma de automatizacion para gestion de alquileres
 - **LastRunIndicator:** Ultima ejecucion de cada escenario
 
 ### Login (`/login`)
-- **LoginForm:** Formulario con email/password + "Demo" credentials
-- **SupabaseAuth:** Integracion con Supabase Auth
-- **DemoButton:** Boton de acceso demo pre-configurado
+- **LoginForm:** Formulario con email/password + selector de cuentas demo (password prellenada)
+- **AuthMockLocal:** Sesión mock local por cookie (`lib/auth.ts`, gate `NEXT_PUBLIC_DEMO_AUTH`)
+- **DemoSelector:** Selector de rol demo pre-configurado (admin / técnico)
 
 ## 3. Reglas SEO Tecnico
 

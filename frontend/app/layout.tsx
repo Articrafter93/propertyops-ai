@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { getLocale } from "@/lib/i18n/server";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
-  title: "PropertyOps AI — Gestión Integral de Alquileres",
-  description: "Plataforma no-code + AI para operación integral de habitaciones en alquiler",
+  title: "PropertyOps AI — Property Rental Operations",
+  description: "No-code + AI platform for end-to-end operations of rooms for rent",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = await getLocale();
   return (
-    <html lang="es" className={`${inter.variable} h-full`}>
+    <html lang={locale} className={`${inter.variable} h-full`}>
       <body className="h-full bg-background text-foreground antialiased">{children}</body>
     </html>
   );

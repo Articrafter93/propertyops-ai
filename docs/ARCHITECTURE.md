@@ -4,10 +4,12 @@ Plataforma de automatización de ciclo completo para gestión de habitaciones en
 
 > **Estado de implementación (honesto).** Este documento describe la **arquitectura objetivo
 > (diseño)**, no el estado construido. Lo **implementado** en el repo es el **dashboard
-> Next.js 16 + Supabase** con datos de demostración sembrados. La capa de automatización
-> multi-servicio (Make · GAS · WhatsApp · OpenAI · Drive) descrita abajo es el **blueprint
-> de diseño y NO está construida** como integraciones vivas. La capa de datos objetivo es
-> **Supabase (PostgreSQL)**, no Airtable. Los diagramas representan el flujo propuesto.
+> Next.js 16** con datos de demostración **estáticos** (`seed.json`) y **autenticación mock
+> local** por cookie. La capa de automatización multi-servicio (Make · GAS · WhatsApp · OpenAI
+> · Drive) descrita abajo es el **blueprint de diseño y NO está construida** como integraciones
+> vivas. En los diagramas, la capa de persistencia objetivo se representa como **PostgreSQL**
+> (base de datos relacional de producción propuesta); en el build actual esos datos viven como
+> `seed.json` estático. Los diagramas representan el flujo propuesto, no el construido.
 
 ---
 
@@ -16,7 +18,9 @@ Plataforma de automatización de ciclo completo para gestión de habitaciones en
 | Capa | Tecnología | Estado |
 |------|-----------|--------|
 | Dashboard | Next.js 16 + TypeScript + Tailwind v4 + Recharts | ✅ Implementado |
-| Datos + Auth | Supabase (PostgreSQL + Supabase Auth) | ✅ Implementado (con datos seed) |
+| Datos | `seed.json` estático tipado (`lib/seed.ts`) | ✅ Implementado |
+| Auth | Mock local por cookie (gate `NEXT_PUBLIC_DEMO_AUTH`) | ✅ Implementado |
+| Persistencia de producción (objetivo) | PostgreSQL | 📐 Diseño (no construido) |
 | Orquestación | Make (Integromat) — 5 escenarios | 📐 Diseño (no construido) |
 | Lógica de negocio | Google Apps Script (GAS) — 7 scripts | 📐 Diseño (no construido) |
 | Documentos | Google Drive + Google Docs | 📐 Diseño (no construido) |
@@ -34,23 +38,23 @@ flowchart TD
     WF([Formulario Web]) -->|POST webhook| S01[Escenario 01\nIntake & Scoring]
     S01 -->|GAS doPost| GAS_SCORE[lead_scoring.gs\nScore 0-100]
     GAS_SCORE --> S01
-    S01 -->|Create/Update| AT_LEADS[(Supabase\nLeads)]
+    S01 -->|Create/Update| AT_LEADS[(PostgreSQL\nLeads)]
     S01 -->|CreateFolder| DRIVE[(Google Drive\nExpedientes)]
     S01 -->|Template WA| WA[WhatsApp\nBusiness API]
 
     AT_LEADS -->|Watch Status=Approved| S02[Escenario 02\nOnboarding]
     S02 -->|GAS doPost| GAS_CONT[contract_generator.gs\nPDF contrato]
     GAS_CONT --> DRIVE
-    S02 -->|Create| AT_CONT[(Supabase\nContracts)]
-    S02 -->|Update| AT_ROOMS[(Supabase\nRooms → Occupied)]
-    S02 -->|Update| AT_TENANTS[(Supabase\nTenants → Active)]
+    S02 -->|Create| AT_CONT[(PostgreSQL\nContracts)]
+    S02 -->|Update| AT_ROOMS[(PostgreSQL\nRooms → Occupied)]
+    S02 -->|Update| AT_TENANTS[(PostgreSQL\nTenants → Active)]
     S02 -->|Template WA| WA
 
     WA -->|Inbound message| S03[Escenario 03\nIncident Mgmt]
     S03 -->|GPT-4o-mini NLP| OAI_MINI[OpenAI\nGPT-4o-mini]
     OAI_MINI --> S03
-    S03 -->|Create| AT_INC[(Supabase\nIncidents)]
-    S03 -->|Search| AT_TECH[(Supabase\nTechnicians)]
+    S03 -->|Create| AT_INC[(PostgreSQL\nIncidents)]
+    S03 -->|Search| AT_TECH[(PostgreSQL\nTechnicians)]
     S03 -->|Template WA x2| WA
 
     DRIVE -->|New photo| S04[Escenario 04\nAI Inspection]
@@ -58,15 +62,15 @@ flowchart TD
     GAS_INSP -->|API call| OAI_VISION[OpenAI\nGPT-4o Vision]
     OAI_VISION --> GAS_INSP
     GAS_INSP --> S04
-    S04 -->|Create| AT_INSP[(Supabase\nVisual_Inspections)]
-    S04 -->|Create| AT_PAY[(Supabase\nPayments)]
+    S04 -->|Create| AT_INSP[(PostgreSQL\nVisual_Inspections)]
+    S04 -->|Create| AT_PAY[(PostgreSQL\nPayments)]
     S04 -->|Template WA| WA
 
     CRON([CRON 07:00]) --> S05[Escenario 05\nKPI Reporting]
     S05 -->|GAS doPost| GAS_KPI[kpi_reporter.gs\n12 KPIs]
     GAS_KPI -->|Read all tables| AT_LEADS & AT_INC & AT_TENANTS & AT_PAY
     GAS_KPI --> S05
-    S05 -->|Create| AT_KPI[(Supabase\nDaily_KPIs)]
+    S05 -->|Create| AT_KPI[(PostgreSQL\nDaily_KPIs)]
     S05 -->|HTML email| GMAIL[Gmail\nResumen gestor]
 
     AT_KPI & AT_INC & AT_TENANTS & AT_ROOMS -->|Static seed| DASH[Next.js Dashboard\nVercel]
@@ -89,7 +93,7 @@ graph LR
         DM[drive_manager.gs]
     end
 
-    subgraph Supabase Tables
+    subgraph PostgreSQL Tables
         TL[(Leads)]
         TT[(Tenants)]
         TR[(Rooms)]
@@ -142,14 +146,14 @@ graph LR
 | # | Escenario | Trigger | Pasos | GAS llamado |
 |---|-----------|---------|-------|-------------|
 | 01 | Pre-onboarding & Intake | Webhook POST form | 10 | `lead_scoring.gs` |
-| 02 | Tenant Onboarding | Supabase Watch (Lead=Approved) | 11 | `contract_generator.gs` |
+| 02 | Tenant Onboarding | DB Watch (Lead=Approved) | 11 | `contract_generator.gs` |
 | 03 | Incident Management | WhatsApp Inbound | 12 | `whatsapp_notifier.gs` |
 | 04 | AI Visual Inspection | Drive Watch (new photo) | 11 | `inspection.gs` |
 | 05 | Daily KPI Reporting | CRON 07:00 | 8 | `kpi_reporter.gs` |
 
 ---
 
-## Base de datos Supabase (16 tablas)
+## Base de datos objetivo — PostgreSQL (16 tablas)
 
 Ver [DATABASE.md](DATABASE.md) para el schema completo con todos los campos, tipos y relaciones.
 
@@ -192,5 +196,5 @@ Properties ──< Rooms ──< Beds
 - **Secrets:** Variables de entorno en Make + `CONFIG` en GAS. Nunca en código fuente.
 - **PII:** Carpetas Drive con acceso restringido por inquilino. `shareFileWithTenant()` solo añade viewer.
 - **Audit trail:** Todo write/update pasa por `writeAuditLog()` en `utils.gs` → tabla `Audit_Log`.
-- **Idempotencia:** Todos los escenarios Make tienen `idempotency_key` con ventana temporal y guard field en Supabase.
+- **Idempotencia:** Todos los escenarios Make tienen `idempotency_key` con ventana temporal y guard field en la base de datos.
 - **Reintentos:** Strategy `exponential backoff` (3 intentos, inicio 2-5s) en todos los escenarios.

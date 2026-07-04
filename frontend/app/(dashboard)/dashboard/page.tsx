@@ -12,8 +12,11 @@ import {
 import {
   getKpiHistory, getIncidents, getTenants, getPayments,
   getActivityFeed,
-} from "@/lib/supabase";
-import { revenue_by_property, formatCurrency, formatRelativeTime } from "@/lib/seed";
+} from "@/lib/data";
+import { revenue_by_property } from "@/lib/seed";
+import { getDictionary, getLocale } from "@/lib/i18n/server";
+import { fmtCurrency, fmtRelativeTime } from "@/lib/i18n/format";
+import { enActivityMessage } from "@/lib/i18n/seed-en";
 
 const iconMap: Record<string, React.ElementType> = {
   FileCheck, UserCheck, Camera, AlertTriangle, Banknote, CheckCircle: CheckSquare, LogOut, UserPlus,
@@ -24,13 +27,16 @@ function ChartSkeleton() {
 }
 
 export default async function DashboardPage() {
-  const [kpi_history, incidents, tenants, payments, activity_feed] = await Promise.all([
+  const [kpi_history, incidents, tenants, payments, activity_feed, dict, locale] = await Promise.all([
     getKpiHistory(),
     getIncidents(),
     getTenants(),
     getPayments(),
     getActivityFeed(),
+    getDictionary(),
+    getLocale(),
   ]);
+  const d = dict.dashboard;
 
   const latest = kpi_history[kpi_history.length - 1];
   const prev = kpi_history[kpi_history.length - 8];
@@ -43,39 +49,41 @@ export default async function DashboardPage() {
 
   return (
     <>
-      <TopBar title="Dashboard Ejecutivo" subtitle="Resumen operativo en tiempo real" />
+      <TopBar title={d.title} subtitle={d.subtitle} />
       <main className="flex-1 overflow-y-auto p-6 bg-background">
         {/* KPI Cards */}
         <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
           <KpiCard
-            label="Tasa de ocupación"
+            label={d.kpiOccupancy}
             value={`${latest.occupancy_rate}%`}
             icon={BarChart3}
             delta={latest.occupancy_rate - (prev?.occupancy_rate ?? latest.occupancy_rate)}
             trend={latest.occupancy_rate > (prev?.occupancy_rate ?? 0) ? "up" : "neutral"}
-            sub="7 de 8 habitaciones"
+            sub={d.kpiOccupancySub}
+            deltaSuffix={dict.common.vsPrevMonth}
           />
           <KpiCard
-            label="Ingresos del mes"
-            value={formatCurrency(revenueMonthly)}
+            label={d.kpiRevenue}
+            value={fmtCurrency(revenueMonthly, locale)}
             icon={Banknote}
             delta={revenueDelta}
             trend={revenueDelta > 0 ? "up" : revenueDelta < 0 ? "down" : "neutral"}
             iconColor="#0d9488"
+            deltaSuffix={dict.common.vsPrevMonth}
           />
           <KpiCard
-            label="Incidencias abiertas"
+            label={d.kpiOpenIncidents}
             value={String(openIncidents)}
             icon={AlertTriangle}
             iconColor="#f59e0b"
-            sub={`${pendingPayments} pago${pendingPayments !== 1 ? "s" : ""} pendiente${pendingPayments !== 1 ? "s" : ""}`}
+            sub={(pendingPayments !== 1 ? d.paymentsPendingPlural : d.paymentsPending).replace("{count}", String(pendingPayments))}
           />
           <KpiCard
-            label="Inquilinos activos"
+            label={d.kpiActiveTenants}
             value={String(activeTenantsCount)}
             icon={Users}
             iconColor="#6366f1"
-            sub="1 en proceso de salida"
+            sub={d.kpiActiveTenantsSub}
           />
         </div>
 
@@ -83,8 +91,8 @@ export default async function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Occupancy Chart */}
           <Card className="p-5 shadow-none border border-border col-span-1">
-            <h3 className="text-sm font-semibold text-foreground mb-1">Tendencia de ocupación</h3>
-            <p className="text-xs text-muted-foreground mb-4">Últimos 14 días</p>
+            <h3 className="text-sm font-semibold text-foreground mb-1">{d.occupancyTrend}</h3>
+            <p className="text-xs text-muted-foreground mb-4">{d.occupancyTrendSub}</p>
             <Suspense fallback={<ChartSkeleton />}>
               <OccupancyTrendChart data={kpi_history} />
             </Suspense>
@@ -92,8 +100,8 @@ export default async function DashboardPage() {
 
           {/* Revenue Chart */}
           <Card className="p-5 shadow-none border border-border col-span-1">
-            <h3 className="text-sm font-semibold text-foreground mb-1">Ingresos por propiedad</h3>
-            <p className="text-xs text-muted-foreground mb-4">Últimos 3 meses</p>
+            <h3 className="text-sm font-semibold text-foreground mb-1">{d.revenueByProperty}</h3>
+            <p className="text-xs text-muted-foreground mb-4">{d.revenueByPropertySub}</p>
             <Suspense fallback={<ChartSkeleton />}>
               <RevenueByPropertyChart data={revenue_by_property} />
             </Suspense>
@@ -101,8 +109,8 @@ export default async function DashboardPage() {
 
           {/* Activity Feed */}
           <Card className="p-5 shadow-none border border-border col-span-1">
-            <h3 className="text-sm font-semibold text-foreground mb-1">Actividad reciente</h3>
-            <p className="text-xs text-muted-foreground mb-4">Últimos eventos</p>
+            <h3 className="text-sm font-semibold text-foreground mb-1">{d.recentActivity}</h3>
+            <p className="text-xs text-muted-foreground mb-4">{d.recentActivitySub}</p>
             <div className="space-y-3">
               {activity_feed.map((item, i) => {
                 const Icon = iconMap[item.icon] ?? CheckSquare;
@@ -113,8 +121,8 @@ export default async function DashboardPage() {
                         <Icon className="w-3 h-3 text-muted-foreground" />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-xs text-foreground leading-snug">{item.message}</p>
-                        <p className="text-[10px] text-muted-foreground mt-0.5">{formatRelativeTime(item.timestamp)}</p>
+                        <p className="text-xs text-foreground leading-snug">{enActivityMessage(item, locale)}</p>
+                        <p className="text-[10px] text-muted-foreground mt-0.5">{fmtRelativeTime(item.timestamp, locale)}</p>
                       </div>
                     </div>
                     {i < activity_feed.length - 1 && <Separator className="mt-3" />}

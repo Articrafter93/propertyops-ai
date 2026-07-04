@@ -15,7 +15,7 @@ export function getRole(email?: string | null): UserRole {
 }
 
 // Routes the tecnico role is allowed to access
-const TECNICO_ALLOWED = ['/incidencias'];
+const TECNICO_ALLOWED = ['/incidents'];
 
 export function isPathAllowed(role: UserRole, pathname: string): boolean {
   if (role === 'admin') return true;

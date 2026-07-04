@@ -13,6 +13,10 @@ function Progress({
   return (
     <ProgressPrimitive.Root
       value={value}
+      // Deterministic aria-valuetext: base-ui's default formats the percent with the
+      // runtime locale, which differs between the server (Node) and the client (browser)
+      // and causes a hydration mismatch. Forcing `${value}%` keeps both sides identical.
+      getAriaValueText={(_formatted, val) => (val == null ? "" : `${val}%`)}
       data-slot="progress"
       className={cn("flex flex-wrap gap-3", className)}
       {...props}

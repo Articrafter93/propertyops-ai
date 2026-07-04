@@ -27,10 +27,10 @@ Modo: Renovacion Guiada
 - [x] **GATE 1: APROBADO**
 
 #### 2. Backend y APIs
-- [x] Datos + Auth real: **Supabase (Postgres + Auth)**; integraciones externas (WhatsApp/OpenAI/Make/GAS/Drive) SIMULADAS (mock sandbox)
-- [x] Matriz backend `MATRIZ-BACKEND.md` v2.0.0 reconciliada a Supabase
+- [x] Datos real: **`seed.json` estático** (sin DB viva); Auth: **mock local por cookie**; integraciones externas (WhatsApp/OpenAI/Make/GAS/Drive) SIMULADAS (mock sandbox). _Supabase eliminado 2026-07-02, Nota de Cambio N.º 01_
+- [x] Matriz backend `MATRIZ-BACKEND.md` v3.0.0 reconciliada a seed estático + auth mock local
 - [x] Proveedores por rubro confirmados (realidad construida)
-- [x] **GATE 3: APROBADO** (2026-06-25, reconciliado a Supabase)
+- [x] **GATE 3: APROBADO** (2026-06-25; reconciliado a seed estático 2026-07-02)
 
 #### 3. Arquitectura
 - [x] `00-ARQUITECTURA-PROYECTO.md` creado y aprobado
@@ -77,9 +77,10 @@ Modo: Renovacion Guiada
 
 ## Notas de Sesion
 - Proyecto tiene arquitectura definida en `docs/ARCHITECTURE.md`
-- Stack real: Next.js 16 + Tailwind v4 + shadcn + Recharts + **Supabase (Postgres + Auth)**
-- Integraciones externas (Make/Airtable/GAS/WhatsApp/OpenAI/Drive): SIMULADAS como datos en Supabase (sandbox de portafolio)
+- Stack real: Next.js 16 + Tailwind v4 + shadcn + Recharts + **`seed.json` estático + auth mock local**
+- Integraciones externas (Make/GAS/WhatsApp/OpenAI/Drive): SIMULADAS como datos en `seed.json` (sandbox de portafolio)
 - Dashboard existente con 8 vistas en `frontend/app/(dashboard)/` + auth + login
 - Artefactos de renovacion completados para Pasos 1-3
-- `[2026-06-25]` Reconciliacion `/quefalta`: keystone stack→Supabase, GATE 3 cerrado, docs v2.0.0
-- Pendiente: GATE 0 (Seguridad), SEO metadata, robots/sitemap, security headers, Privacy policy, artefactos de gobernanza (tipo_cliente, CLASIFICACION-ACTIVO, MATRIZ FULL-STACK)
+- `[2026-06-25]` Reconciliacion `/quefalta`: keystone stack→Supabase, GATE 3 cerrado, docs v2.0.0 _(histórico)_
+- `[2026-07-02]` Regularización: Supabase eliminado → seed estático + auth mock local (Nota de Cambio N.º 01); 10 vulns → 0; docs v3.0.0
+- Pendiente: GATE 0 (Seguridad), smoke tests, gates visuales, WF-011 + VFH, cadena de cierre de portafolio

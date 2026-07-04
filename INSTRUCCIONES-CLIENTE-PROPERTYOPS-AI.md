@@ -14,11 +14,11 @@ Plataforma de automatizacion de ciclo completo para gestion de habitaciones en a
 
 ### Requisitos Funcionales Solicitados
 
-> **Semántica de estado (reconciliado 2026-06-25).** ✓ significa **representado en el
-> dashboard construido** (Next.js + Supabase con datos seed), NO integración viva. Los
+> **Semántica de estado (reconciliado 2026-07-02).** ✓ significa **representado en el
+> dashboard construido** (Next.js + `seed.json` estático + auth mock local), NO integración viva. Los
 > requisitos de backend (scoring GAS, generación de contratos, WhatsApp, GPT-4o Vision,
 > reporting) corresponden a la **arquitectura objetivo** y están **simulados como datos**,
-> no implementados como servicios reales. Ver `MATRIZ-BACKEND.md` v2.0.0.
+> no implementados como servicios reales. Ver `MATRIZ-BACKEND.md` v3.0.0.
 
 | # | Requisito | Estado | Notas |
 |---|---|---|---|
@@ -31,12 +31,12 @@ Plataforma de automatizacion de ciclo completo para gestion de habitaciones en a
 | 7 | Inspeccion visual con IA (GPT-4o Vision) | ✓ | Escenario 04 - AI Visual Inspection |
 | 8 | Reporte diario de KPIs | ✓ | Escenario 05 - Daily KPI Reporting |
 | 9 | Dashboard Next.js con 8-11 pantallas | ✓ | Vercel SSG deployment |
-| 10 | Integracion con Supabase (16 tablas) | ✓ | Fuente unica de verdad |
+| 10 | Modelo de datos de 16 entidades | ✓ | `seed.json` estático (Postgres = objetivo de producción) |
 | 11 | Integracion con WhatsApp Business API | ✓ | Notificaciones transaccionales |
 | 12 | Uso de OpenAI GPT-4o y GPT-4o-mini | ✓ | NLP e inspeccion visual |
 
 ### Restricciones y Notas Especiales
-- **Base de datos:** Supabase (16 tablas) - Fuente unica de verdad
+- **Base de datos:** `seed.json` estático (16 entidades); Postgres = objetivo de producción
 - **Orquestacion:** Make (Integromat) - 5 escenarios
 - **Logica de negocio:** Google Apps Script (7 scripts)
 - **Dashboard:** Next.js 16 + Tailwind + Recharts (8-11 pantallas estaticas)

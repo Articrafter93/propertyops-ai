@@ -32,9 +32,10 @@ Plataforma de automatizacion de ciclo completo para gestion de habitaciones en a
 
 ### Tecnologias Identificadas (reconciliado 2026-06-25)
 
-**Construido (real):**
+**Construido (real):** _(reconciliado 2026-07-02 — Supabase eliminado, Nota de Cambio N.º 01)_
 - **Dashboard:** Next.js 16 + TypeScript + Tailwind v4 + shadcn + Recharts (8 vistas)
-- **Datos + Auth:** Supabase (PostgreSQL + Supabase Auth) con datos seed
+- **Datos:** `seed.json` estático tipado (`lib/seed.ts`), sin DB viva
+- **Auth:** mock local por cookie (`lib/auth.ts`, gate `NEXT_PUBLIC_DEMO_AUTH`)
 
 **Arquitectura objetivo (diseño, NO implementada en este build):**
 - **Orquestacion:** Make (Integromat) - 5 escenarios
@@ -52,33 +53,33 @@ Plataforma de automatizacion de ciclo completo para gestion de habitaciones en a
 ## 5. Requerimientos de Pagos
 - **¿Procesar pagos en linea?** No directamente (el sistema genera contratos y registra pagos, pero las transacciones son externas)
 - **Pasarela:** No aplica procesamiento directo
-- **Registro:** Tabla `Payments` en Supabase
+- **Registro:** entidad `Payment` en el seed estático (objetivo: tabla en Postgres de producción)
 
 ## 6. Presupuesto y Plazos
-- **Presupuesto hosting:** Por confirmar (Vercel para frontend, Supabase Make/GAS como backend)
+- **Presupuesto hosting:** Por confirmar (Vercel para frontend; sin costo de DB — demo estática)
 - **Plazos:** Por confirmar
 
-## 7. Herramientas del Cliente
-- **CRM/Base datos:** Supabase (16 tablas)
-- **Automatizacion:** Make (Integromat)
-- **Documentos:** Google Workspace (Drive, Docs, Sheets)
-- **IA:** OpenAI API
+## 7. Herramientas del Cliente (diseño objetivo)
+- **CRM/Base datos:** PostgreSQL (16 tablas) — objetivo de producción; en el build = `seed.json`
+- **Automatizacion:** Make (Integromat) — objetivo (simulado)
+- **Documentos:** Google Workspace (Drive, Docs, Sheets) — objetivo (simulado)
+- **IA:** OpenAI API — objetivo (simulado)
 
 ## 8. Capacidad Tecnica del Cliente
-- **Nivel:** Media/Alta (maneja Supabase, Make, GAS)
-- **CMS:** No requiere CMS tradicional (usa Supabase como headless)
-- **Actualizaciones:** Los cambios de contenido son via Supabase/Make
+- **Nivel:** Media/Alta (maneja bases de datos, Make, GAS)
+- **CMS:** No requiere CMS tradicional (datos desde el seed tipado / DB headless en producción)
+- **Actualizaciones:** en el build, cambios via `seed.json`; en producción, via DB/Make
 
 ## 9. Necesidades de Infraestructura
-- **Base de datos:** Si (Supabase como SaaS)
-- **Docker:** Innecesario (arquitectura serverless con Make/GAS)
-- **Autenticacion:** Si (Next.js con Supabase segun `frontend/lib/supabase.ts`)
+- **Base de datos:** No en este build (datos en `seed.json` estático; Postgres = objetivo de producción)
+- **Docker:** Innecesario (arquitectura serverless / Vercel)
+- **Autenticacion:** Si (mock local por cookie, `frontend/lib/auth.ts`)
 - **Multi-idioma:** No especificado
 
 ## 10. Respuestas No Contestadas
 - [ ] Presupuesto exacto de hosting
 - [ ] Plazos duros de entrega
-- [x] Confirmacion de capa de datos: **Supabase** (resuelto 2026-06-25; Airtable descartado)
+- [x] Confirmacion de capa de datos: **`seed.json` estático + auth mock local** (2026-07-02; Supabase eliminado, Nota de Cambio N.º 01)
 - [ ] Decision sobre firma electronica (DocuSign vs PandaDoc)
 - [ ] Requerimientos de multi-idioma
 
@@ -92,7 +93,7 @@ Plataforma de automatizacion de ciclo completo para gestion de habitaciones en a
 > Sensibilidad de datos: Registrado (PII de inquilinos, contratos)
 > Pagos en linea: No directamente (registro externo)
 > Presupuesto hosting: Por confirmar
-> Riesgos identificados: Manejo de PII bajo Ley 1581, integracion multiple (Make-Supabase-GAS-OpenAI), firma electronica pendiente
+> Riesgos identificados: Manejo de PII bajo Ley 1581 (PII ficticia en seed), integracion multiple (Make-GAS-OpenAI) = diseño objetivo simulado, firma electronica pendiente
 > ¿CONFIRMAS QUE ESTE BRIEFING ES CORRECTO Y COMPLETO PARA PASAR A LA FASE 2? (si/no)
 
 ---

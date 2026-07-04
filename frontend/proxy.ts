@@ -1,62 +1,39 @@
-import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import { getRole, isPathAllowed } from '@/lib/roles'
 
-export async function proxy(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({ request })
+const COOKIE_NAME = 'propertyops_demo_session'
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll()
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-          supabaseResponse = NextResponse.next({ request })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          )
-        },
-      },
-    }
-  )
-
-  const { data: { user } } = await supabase.auth.getUser()
+export function proxy(request: NextRequest) {
+  const email = request.cookies.get(COOKIE_NAME)?.value ?? null
 
   const { pathname } = request.nextUrl
   const isLoginPage = pathname.startsWith('/login')
   const isAuthRoute = pathname.startsWith('/auth')
-  const isPublicPage = pathname.startsWith('/privacidad')
+  const isPublicPage = pathname.startsWith('/privacy')
 
-  // Redirect unauthenticated users to login
-  if (!user && !isLoginPage && !isAuthRoute && !isPublicPage) {
+  if (!email && !isLoginPage && !isAuthRoute && !isPublicPage) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
   }
 
-  // Redirect authenticated users away from login
-  if (user && isLoginPage) {
+  if (email && isLoginPage) {
     const url = request.nextUrl.clone()
-    const role = getRole(user.email)
-    url.pathname = role === 'tecnico' ? '/incidencias' : '/dashboard'
+    const role = getRole(email)
+    url.pathname = role === 'tecnico' ? '/incidents' : '/dashboard'
     return NextResponse.redirect(url)
   }
 
-  // Role-based access: tecnico can only access /incidencias
-  if (user && !isPublicPage && !isLoginPage && !isAuthRoute) {
-    const role = getRole(user.email)
+  if (email && !isPublicPage && !isLoginPage && !isAuthRoute) {
+    const role = getRole(email)
     if (!isPathAllowed(role, pathname)) {
       const url = request.nextUrl.clone()
-      url.pathname = '/incidencias'
+      url.pathname = '/incidents'
       return NextResponse.redirect(url)
     }
   }
 
-  return supabaseResponse
+  return NextResponse.next()
 }
 
 export const config = {

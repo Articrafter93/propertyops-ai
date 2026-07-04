@@ -1,24 +1,24 @@
 'use server'
 
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase-server'
+import { signInLocal, signOutLocal } from '@/lib/auth'
+import { getRole } from '@/lib/roles'
 
 export async function signIn(
   _prevState: { error: string } | null,
   formData: FormData
 ): Promise<{ error: string }> {
-  const supabase = await createClient()
   const email = formData.get('email') as string
   const password = formData.get('password') as string
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password })
-  if (error) return { error: error.message }
+  const err = await signInLocal(email, password)
+  if (err) return err
 
-  redirect('/dashboard')
+  // Redirect by role so the URL matches the landing view (no double-redirect via proxy)
+  redirect(getRole(email) === 'tecnico' ? '/incidents' : '/dashboard')
 }
 
 export async function signOut() {
-  const supabase = await createClient()
-  await supabase.auth.signOut()
+  await signOutLocal()
   redirect('/login')
 }
