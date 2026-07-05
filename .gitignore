@@ -48,3 +48,25 @@ venv/
 automatizaciones/cerebro/memory/*.json
 !automatizaciones/cerebro/memory/*.schema.json
 !automatizaciones/cerebro/memory/accounts-memory.example.json
+
+# Andamiaje interno (excluido del repo publico) — publish-portfolio-project
+comunicacion-cliente
+BRIEF.md
+PLAN.md
+QUE-FALTA.md
+REDO-TRACKING.md
+CHECKLIST-CONTROL.md
+CLASIFICACION-ACTIVO.md
+MATRIZ-BACKEND.md
+DIRECCION-VISUAL.md
+INSPECCION-VISUAL.md
+01-BRIEFING.md
+02-ARQUITECTURA-SITIO.md
+00-ARQUITECTURA-PROYECTO.md
+GEMINI.md
+docs/GATE9_Revision_Reporte.md
+SELLO DE APROBACION PARCIAL.md
+VERIFICACION-FUNCIONAL-HUMANA.md
+REVISION-RECLUTADOR.md
+HERRAMIENTAS-EXTERNAS.md
+reports
